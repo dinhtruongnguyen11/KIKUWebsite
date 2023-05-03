@@ -366,7 +366,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             Welcome to KIKU
           </div>
           <div className="text-center text-lg text-black dark:text-white">
-            <div className="mb-8">{`Say hello to our AI chatbot, your new digital assistant!`}</div>
+            <div className="mb-8">
+              {'Say hello to our AI chatbot, your new digital assistant!'}
+            </div>
           </div>
         </div>
       ) : modelError ? (
