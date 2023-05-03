@@ -444,14 +444,14 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           </h2>
                           <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
                             <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              "Explain quantum computing in simple terms" →
+                              Explain quantum computing in simple terms →
                             </li>
                             <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              "Got any creative ideas for a 10 year old’s
-                              birthday?" →
+                              Got any creative ideas for a 10 year old’s
+                              birthday? →
                             </li>
                             <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              "How do I make an HTTP request in Javascript?" →
+                              How do I make an HTTP request in Javascript? →
                             </li>
                           </ul>
                         </div>
