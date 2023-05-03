@@ -52,10 +52,11 @@ const Home = ({
   serverSidePluginKeysSet,
   defaultModelId,
 }: Props) => {
-  const { t } = useTranslation('chat');
+  const { t, i18n } = useTranslation('chat');
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
+  const [sheetData, setSheetData] = useState();
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -65,6 +66,7 @@ const Home = ({
     state: {
       apiKey,
       lightMode,
+      language,
       folders,
       conversations,
       selectedConversation,
@@ -90,6 +92,20 @@ const Home = ({
     },
     { enabled: true, refetchOnMount: false },
   );
+
+  const fetchGoogleSheetData = async () => {
+    try {
+      const res = await fetch(
+        'https://sheet.best/api/sheets/5e4d94fd-503f-44ed-bdf4-1d3d29a49e81',
+      );
+      const data = await res.json();
+      const newData = data.map((item: any) => ({ ...item, id: uuidv4() }));
+      setSheetData(newData);
+      return newData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (data) dispatch({ field: 'models', value: data });
@@ -120,9 +136,9 @@ const Home = ({
     };
 
     const updatedFolders = [...folders, newFolder];
+    saveFolders(updatedFolders);
 
     dispatch({ field: 'folders', value: updatedFolders });
-    saveFolders(updatedFolders);
   };
 
   const handleDeleteFolder = (folderId: string) => {
@@ -259,6 +275,16 @@ const Home = ({
       });
     }
 
+    if (settings.language) {
+      dispatch({
+        field: 'language',
+        value: settings.language,
+      });
+      i18n.changeLanguage(settings.language);
+    } else {
+      i18n.changeLanguage('en');
+    }
+
     const apiKey = localStorage.getItem('apiKey');
 
     if (serverSideApiKeyIsSet) {
@@ -297,10 +323,16 @@ const Home = ({
       dispatch({ field: 'folders', value: JSON.parse(folders) });
     }
 
-    const prompts = localStorage.getItem('prompts');
-    if (prompts) {
-      dispatch({ field: 'prompts', value: JSON.parse(prompts) });
+    interface ListItem {
+      type: string;
+      content: string;
     }
+
+    fetchGoogleSheetData().then((prompts) => {
+      if (prompts) {
+        dispatch({ field: 'prompts', value: prompts });
+      }
+    });
 
     const conversationHistory = localStorage.getItem('conversationHistory');
     if (conversationHistory) {
@@ -360,13 +392,13 @@ const Home = ({
       }}
     >
       <Head>
-        <title>Faavia</title>
+        <title>KIKU</title>
         <meta name="description" content="ChatGPT but better." />
         <meta
           name="viewport"
           content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/kikulg.ico" />
       </Head>
       {selectedConversation && (
         <main
@@ -385,8 +417,6 @@ const Home = ({
             <div className="flex flex-1">
               <Chat stopConversationRef={stopConversationRef} />
             </div>
-
-            <Promptbar />
           </div>
         </main>
       )}
@@ -404,21 +434,11 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
       process.env.DEFAULT_MODEL) ||
     fallbackModelID;
 
-  let serverSidePluginKeysSet = false;
-
-  const googleApiKey = process.env.GOOGLE_API_KEY;
-  const googleCSEId = process.env.GOOGLE_CSE_ID;
-
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true;
-  }
-
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
       defaultModelId,
-      serverSidePluginKeysSet,
-      ...(await serverSideTranslations(locale ?? 'en', [
+      ...(await serverSideTranslations('es', [
         'common',
         'chat',
         'sidebar',

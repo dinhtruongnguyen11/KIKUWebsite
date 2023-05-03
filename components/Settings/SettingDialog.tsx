@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useReducer, useRef } from 'react';
+import { FC, useContext, useEffect, useReducer, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -16,7 +16,8 @@ interface Props {
 }
 
 export const SettingDialog: FC<Props> = ({ open, onClose }) => {
-  const { t } = useTranslation('settings');
+  const { t, i18n } = useTranslation('settings');
+
   const settings: Settings = getSettings();
   const { state, dispatch } = useCreateReducer<Settings>({
     initialState: settings,
@@ -44,13 +45,31 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
   }, [onClose]);
 
   const handleSave = () => {
-    homeDispatch({ field: 'lightMode', value: state.theme });
+    homeDispatch({
+      field: 'lightMode',
+      value: state.theme,
+    });
+
+    homeDispatch({
+      field: 'language',
+      value: state.language,
+    });
+
     saveSettings(state);
+
+    const newLocale = state.language;
+    i18n.changeLanguage(newLocale);
+
+    console.log(state.language);
   };
 
   // Render nothing if the dialog is not open.
   if (!open) {
     return <></>;
+  }
+
+  {
+    console.log(state.language);
   }
 
   // Render the dialog.
@@ -85,6 +104,21 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
             >
               <option value="dark">{t('Dark mode')}</option>
               <option value="light">{t('Light mode')}</option>
+            </select>
+
+            <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
+              {t('Language')}
+            </div>
+
+            <select
+              className="w-full cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
+              value={state.language}
+              onChange={(event) =>
+                dispatch({ field: 'language', value: event.target.value })
+              }
+            >
+              <option value="en">{t('English')}</option>
+              <option value="es">{t('Spanish')}</option>
             </select>
 
             <button

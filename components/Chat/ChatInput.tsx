@@ -2,6 +2,8 @@ import {
   IconArrowDown,
   IconBolt,
   IconBrandGoogle,
+  IconMicrophone,
+  IconPlayerRecord,
   IconPlayerStop,
   IconRepeat,
   IconSend,
@@ -24,7 +26,6 @@ import { Prompt } from '@/types/prompt';
 
 import HomeContext from '@/pages/api/home/home.context';
 
-import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 
@@ -62,6 +63,7 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -104,6 +106,19 @@ export const ChatInput = ({
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
       textareaRef.current.blur();
     }
+  };
+
+  const handleRecord = () => {
+    setIsRecording(true);
+    const recognition = new (window as any).webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.onresult = (event: any) => {
+      const data = event.results[0][0].transcript;
+      const msg: Message = { role: 'user', content: data };
+      onSend({ role: 'user', content: data }, plugin);
+      setIsRecording(false);
+    };
+    recognition.start();
   };
 
   const handleStopConversation = () => {
@@ -167,7 +182,7 @@ export const ChatInput = ({
       handleSend();
     } else if (e.key === '/' && e.metaKey) {
       e.preventDefault();
-      setShowPluginSelect(!showPluginSelect);
+      // setShowPluginSelect(!showPluginSelect);
     }
   };
 
@@ -282,34 +297,14 @@ export const ChatInput = ({
         <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
           <button
             className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={() => setShowPluginSelect(!showPluginSelect)}
-            onKeyDown={(e) => {}}
+            onClick={handleRecord}
           >
-            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
+            {isRecording ? (
+              <IconPlayerRecord size={20} />
+            ) : (
+              <IconMicrophone size={20} />
+            )}
           </button>
-
-          {showPluginSelect && (
-            <div className="absolute left-0 bottom-14 rounded bg-white dark:bg-[#343541]">
-              <PluginSelect
-                plugin={plugin}
-                onKeyDown={(e: any) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    setShowPluginSelect(false);
-                    textareaRef.current?.focus();
-                  }
-                }}
-                onPluginChange={(plugin: Plugin) => {
-                  setPlugin(plugin);
-                  setShowPluginSelect(false);
-
-                  if (textareaRef && textareaRef.current) {
-                    textareaRef.current.focus();
-                  }
-                }}
-              />
-            </div>
-          )}
 
           <textarea
             ref={textareaRef}
@@ -325,7 +320,7 @@ export const ChatInput = ({
               }`,
             }}
             placeholder={
-              t('Type a message or type "/" to select a prompt...') || ''
+              t('Type a message or type "/" to select a role...') || ''
             }
             value={content}
             rows={1}
@@ -381,16 +376,16 @@ export const ChatInput = ({
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
         <a
-          href="https://github.com/mckaywrigley/chatbot-ui"
+          href="https://kiku.do"
           target="_blank"
           rel="noreferrer"
           className="underline"
         >
-          Faavia
+          KIKU
         </a>
         .{' '}
         {t(
-          "Faavia is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
+          "KIKU is an advanced chatbot for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
         )}
       </div>
     </div>
