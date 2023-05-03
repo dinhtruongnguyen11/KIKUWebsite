@@ -330,6 +330,12 @@ const Home = ({
 
     fetchGoogleSheetData().then((prompts) => {
       if (prompts) {
+        const createImage = {
+          id: 'ci',
+          name: 'Image Generation',
+          content: 'image-description:',
+        };
+        prompts.unshift(createImage);
         dispatch({ field: 'prompts', value: prompts });
       }
     });

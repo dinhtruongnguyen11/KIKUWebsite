@@ -103,7 +103,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           temperature: updatedConversation.temperature,
         };
 
-        if (message.content.includes('generate-image:')) {
+        if (message.content.includes('image-description:')) {
           const configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
           });
@@ -113,7 +113,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           const openai = new OpenAIApi(configuration);
 
           const response = await openai.createImage({
-            prompt: message.content.replace('generate-image:', ''),
+            prompt: message.content.replace('image-description:', ''),
             n: 1,
             size: '512x512',
           });
