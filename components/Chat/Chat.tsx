@@ -105,8 +105,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
         if (message.content.includes('generate-image:')) {
           const configuration = new Configuration({
-            apiKey: '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',
+            apiKey: process.env.OPENAI_API_KEY,
           });
+
           delete configuration.baseOptions.headers['User-Agent'];
 
           const openai = new OpenAIApi(configuration);
