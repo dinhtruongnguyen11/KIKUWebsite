@@ -282,7 +282,7 @@ export const ChatMessage: FC<Props> = memo(
                         return (
                           <img
                             src={children.toString()}
-                            className="border-2 border-gray-300 p-2 rounded-lg"
+                            className="border border-neutral-200 p-4 dark:border-neutral-600 rounded-lg"
                             alt="image"
                           />
                         );
