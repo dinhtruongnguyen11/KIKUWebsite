@@ -323,22 +323,16 @@ const Home = ({
       dispatch({ field: 'folders', value: JSON.parse(folders) });
     }
 
-    interface ListItem {
-      type: string;
-      content: string;
-    }
-
-    fetchGoogleSheetData().then((prompts) => {
-      if (prompts) {
-        const createImage = {
-          id: 'ci',
-          name: 'Image Generation',
-          content: 'image-description:',
-        };
-        prompts.unshift(createImage);
-        dispatch({ field: 'prompts', value: prompts });
+    fetchGoogleSheetData().then((roleList) => {
+      if (roleList) {
+        dispatch({ field: 'roleList', value: roleList });
       }
     });
+
+    const prompts = localStorage.getItem('prompts');
+    if (prompts) {
+      dispatch({ field: 'prompts', value: JSON.parse(prompts) });
+    }
 
     const conversationHistory = localStorage.getItem('conversationHistory');
     if (conversationHistory) {
@@ -373,6 +367,7 @@ const Home = ({
           messages: [],
           model: OpenAIModels[defaultModelId],
           prompt: DEFAULT_SYSTEM_PROMPT,
+          promptType: 'text',
           temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
           folderId: null,
         },
@@ -423,6 +418,8 @@ const Home = ({
             <div className="flex flex-1">
               <Chat stopConversationRef={stopConversationRef} />
             </div>
+
+            <Promptbar />
           </div>
         </main>
       )}

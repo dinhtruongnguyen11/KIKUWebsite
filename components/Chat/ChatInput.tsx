@@ -29,6 +29,8 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 
+import { BlobOptions } from 'buffer';
+
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
   onRegenerate: () => void;
@@ -49,7 +51,7 @@ export const ChatInput = ({
   const { t } = useTranslation('chat');
 
   const {
-    state: { selectedConversation, messageIsStreaming, prompts },
+    state: { selectedConversation, messageIsStreaming, prompts, roleList },
 
     dispatch: homeDispatch,
   } = useContext(HomeContext);
@@ -61,9 +63,10 @@ export const ChatInput = ({
   const [promptInputValue, setPromptInputValue] = useState('');
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('');
+  const [isRoleChanged, setIsRoleChanged] = useState<boolean>(false);
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -99,9 +102,17 @@ export const ChatInput = ({
       return;
     }
 
+    let submitValue: string = '';
+
+    if (isRoleChanged && selectedConversation)
+      selectedConversation.prompt = selectedRole;
+
+    console.log(selectedConversation);
+
     onSend({ role: 'user', content }, plugin);
     setContent('');
     setPlugin(null);
+    setIsRoleChanged(false);
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
       textareaRef.current.blur();
@@ -135,6 +146,33 @@ export const ChatInput = ({
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
     return mobileRegex.test(userAgent);
   };
+
+  function renderOptionsByType(list: Prompt[]) {
+    const types = Array.from(new Set(list.map((item) => item.type)));
+    return types.map((type) => (
+      <optgroup key={type} label={type}>
+        {list
+          .filter((item) => item.type === type)
+          .map((item) => (
+            <option key={item.id} value={item.content}>
+              {item.name}
+            </option>
+          ))}
+      </optgroup>
+    ));
+  }
+
+  function handleSelectRoleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedRole(event.target.value);
+    setIsRoleChanged(true);
+  }
+
+  function handleSelectPromptType(event: React.ChangeEvent<HTMLSelectElement>) {
+    if (selectedConversation)
+      selectedConversation.promptType = event.target.value;
+
+    console.log(selectedConversation?.promptType);
+  }
 
   const handleInitModal = () => {
     const selectedPrompt = filteredPrompts[activePromptIndex];
@@ -273,7 +311,7 @@ export const ChatInput = ({
 
   return (
     <div className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-6 dark:border-white/20 dark:via-[#343541] dark:to-[#343541] md:pt-2">
-      <div className="stretch mx-2 mt-4 flex flex-row gap-3 last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
+      <div className="stretch mx-2 mt-4 flex flex-row last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
         {messageIsStreaming && (
           <button
             className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
@@ -294,21 +332,21 @@ export const ChatInput = ({
             </button>
           )}
 
-        <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
-          <button
-            className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={handleRecord}
+        <div className="relative sm:ml-4 flex w-auto flex-grow flex-col rounded-l-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+          <select
+            id="default"
+            className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
+            onChange={handleSelectPromptType}
           >
-            {isRecording ? (
-              <IconPlayerRecord size={20} />
-            ) : (
-              <IconMicrophone size={20} />
-            )}
-          </button>
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+          </select>
+        </div>
 
+        <div className="relative sm:mr-2 flex w-8/12 flex-grow flex-col rounded-r-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <textarea
             ref={textareaRef}
-            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
+            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-5"
             style={{
               resize: 'none',
               bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -320,7 +358,7 @@ export const ChatInput = ({
               }`,
             }}
             placeholder={
-              t('Type a message or type "/" to select a role...') || ''
+              t('Type a message or type "/" to select a prompt...') || ''
             }
             value={content}
             rows={1}
@@ -373,7 +411,33 @@ export const ChatInput = ({
             />
           )}
         </div>
+
+        <div className="relative sm:mr-4 flex w-auto flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+          <button
+            className="absolute left-2.5 top-2 rounded-sm p-1 text-neutral-800 opacity-60  hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 "
+            onClick={handleRecord}
+          >
+            {isRecording ? (
+              <IconPlayerRecord size={20} />
+            ) : (
+              <IconMicrophone size={20} />
+            )}
+          </button>
+        </div>
       </div>
+
+      <div className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:mt-[5px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
+        <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
+          <select
+            id="default"
+            className="border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
+            onChange={handleSelectRoleChange}
+          >
+            {renderOptionsByType(roleList)}
+          </select>
+        </div>
+      </div>
+
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
         <a
           href="https://kiku.do"

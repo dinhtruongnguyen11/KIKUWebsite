@@ -21,6 +21,7 @@ export interface Conversation {
   messages: Message[];
   model: OpenAIModel;
   prompt: string;
+  promptType: string;
   temperature: number;
   folderId: string | null;
 }

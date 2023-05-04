@@ -1,4 +1,4 @@
-import { IconClearAll, IconSettings } from '@tabler/icons-react';
+// import { IconClearAll, IconSettings } from '@tabler/icons-react';
 import {
   MutableRefObject,
   memo,
@@ -31,9 +31,9 @@ import { ChatLoader } from './ChatLoader';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
 import { ModelSelect } from './ModelSelect';
-import { SystemPrompt } from './SystemPrompt';
-import { TemperatureSlider } from './Temperature';
 
+// import { SystemPrompt } from './SystemPrompt';
+// import { TemperatureSlider } from './Temperature';
 import { Configuration, OpenAIApi } from 'openai';
 
 interface Props {
@@ -103,7 +103,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           temperature: updatedConversation.temperature,
         };
 
-        if (message.content.includes('image-description:')) {
+        console.log(selectedConversation.promptType);
+
+        if (selectedConversation.promptType === 'image') {
           const configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
           });
@@ -401,10 +403,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                             <svg
                               stroke="currentColor"
                               fill="none"
-                              stroke-width="1.5"
+                              strokeWidth="1.5"
                               viewBox="0 0 24 24"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               className="h-6 w-6"
                               height="1em"
                               width="1em"
@@ -461,14 +463,14 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
-                              stroke-width="1.5"
+                              strokeWidth="1.5"
                               stroke="currentColor"
                               aria-hidden="true"
                               className="h-6 w-6"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
                               ></path>
                             </svg>
@@ -492,10 +494,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                             <svg
                               stroke="currentColor"
                               fill="none"
-                              stroke-width="1.5"
+                              strokeWidth="1.5"
                               viewBox="0 0 24 24"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               className="h-6 w-6"
                               height="1em"
                               width="1em"
