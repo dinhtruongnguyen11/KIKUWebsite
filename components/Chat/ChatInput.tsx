@@ -429,7 +429,7 @@ export const ChatInput = ({
         <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
           <select
             id="default"
-            className="border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
+            className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
             onChange={handleSelectRoleChange}
           >
             {renderOptionsByType(roleList)}
