@@ -208,6 +208,7 @@ const Home = ({
         tokenLimit: OpenAIModels[defaultModelId].tokenLimit,
       },
       prompt: DEFAULT_SYSTEM_PROMPT,
+      promptType: 'text',
       temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
       folderId: null,
     };
