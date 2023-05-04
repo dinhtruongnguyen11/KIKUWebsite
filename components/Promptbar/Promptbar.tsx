@@ -50,7 +50,7 @@ const Promptbar = () => {
         name: `Prompt ${prompts.length + 1}`,
         description: '',
         content: '',
-        type: 'text',
+        type: '',
         model: OpenAIModels[defaultModelId],
         folderId: null,
       };
