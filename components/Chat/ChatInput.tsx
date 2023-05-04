@@ -297,9 +297,8 @@ export const ChatInput = ({
       if (
         promptListRef.current &&
         !promptListRef.current.contains(e.target as Node)
-      ) {
+      )
         setShowPromptList(false);
-      }
     };
 
     window.addEventListener('click', handleOutsideClick);
