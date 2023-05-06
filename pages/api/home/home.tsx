@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@material-tailwind/react';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -93,19 +94,19 @@ const Home = ({
     { enabled: true, refetchOnMount: false },
   );
 
-  const fetchGoogleSheetData = async () => {
-    try {
-      const res = await fetch(
-        'https://sheet.best/api/sheets/5e4d94fd-503f-44ed-bdf4-1d3d29a49e81',
-      );
-      const data = await res.json();
-      const newData = data.map((item: any) => ({ ...item, id: uuidv4() }));
-      setSheetData(newData);
-      return newData;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchGoogleSheetData = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       'https://sheet.best/api/sheets/5e4d94fd-503f-44ed-bdf4-1d3d29a49e81',
+  //     );
+  //     const data = await res.json();
+  //     const newData = data.map((item: any) => ({ ...item, id: uuidv4() }));
+  //     setSheetData(newData);
+  //     return newData;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (data) dispatch({ field: 'models', value: data });
@@ -324,11 +325,11 @@ const Home = ({
       dispatch({ field: 'folders', value: JSON.parse(folders) });
     }
 
-    fetchGoogleSheetData().then((roleList) => {
-      if (roleList) {
-        dispatch({ field: 'roleList', value: roleList });
-      }
-    });
+    // fetchGoogleSheetData().then((roleList) => {
+    //   if (roleList) {
+    //     dispatch({ field: 'roleList', value: roleList });
+    //   }
+    // });
 
     const prompts = localStorage.getItem('prompts');
     if (prompts) {
@@ -393,37 +394,39 @@ const Home = ({
         handleUpdateConversation,
       }}
     >
-      <Head>
-        <title>KIKU</title>
-        <meta name="description" content="ChatGPT but better." />
-        <meta
-          name="viewport"
-          content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
-        />
-        <link rel="icon" href="/kikulg.ico" />
-      </Head>
-      {selectedConversation && (
-        <main
-          className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
-        >
-          <div className="fixed top-0 w-full sm:hidden">
-            <Navbar
-              selectedConversation={selectedConversation}
-              onNewConversation={handleNewConversation}
-            />
-          </div>
-
-          <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            <Chatbar />
-
-            <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} />
+      <ThemeProvider>
+        <Head>
+          <title>KIKU</title>
+          <meta name="description" content="ChatGPT but better." />
+          <meta
+            name="viewport"
+            content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
+          />
+          <link rel="icon" href="/kikulg.ico" />
+        </Head>
+        {selectedConversation && (
+          <main
+            className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
+          >
+            <div className="fixed top-0 w-full sm:hidden">
+              <Navbar
+                selectedConversation={selectedConversation}
+                onNewConversation={handleNewConversation}
+              />
             </div>
 
-            <Promptbar />
-          </div>
-        </main>
-      )}
+            <div className="flex h-full w-full pt-[48px] sm:pt-0">
+              <Chatbar />
+
+              <div className="flex flex-1">
+                <Chat stopConversationRef={stopConversationRef} />
+              </div>
+
+              <Promptbar />
+            </div>
+          </main>
+        )}
+      </ThemeProvider>
     </HomeContext.Provider>
   );
 };

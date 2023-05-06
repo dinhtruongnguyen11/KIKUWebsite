@@ -31,6 +31,7 @@ import { ChatLoader } from './ChatLoader';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
 import { ModelSelect } from './ModelSelect';
+import { PromptRole } from './PromptRole';
 
 // import { SystemPrompt } from './SystemPrompt';
 // import { TemperatureSlider } from './Temperature';
@@ -106,6 +107,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         console.log(selectedConversation.promptType);
 
         if (selectedConversation.promptType === 'image') {
+          console.log('image');
+
           const configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
           });
@@ -115,7 +118,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           const openai = new OpenAIApi(configuration);
 
           const response = await openai.createImage({
-            prompt: message.content.replace('image-description:', ''),
+            prompt: message.content,
             n: 1,
             size: '512x512',
           });
@@ -160,6 +163,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             value: updatedConversation,
           });
         } else {
+          console.log('text');
           const endpoint = getEndpoint(plugin);
           let body;
           body = JSON.stringify(chatBody);
@@ -361,7 +365,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   }, [messagesEndRef]);
 
   return (
-    <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
+    <div className="relative flex-1 overflow-hidden bg-[#EBF2FC]">
       {!(apiKey || serverSideApiKeyIsSet) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-black dark:text-white">
@@ -382,148 +386,116 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
-            {selectedConversation?.messages.length === 0 ? (
-              <>
-                <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
-                  <div className="text-center text-3xl font-semibold text-gray-800 dark:text-gray-100">
-                    {models.length === 0 ? (
-                      <div>
-                        <Spinner size="16px" className="mx-auto" />
-                      </div>
-                    ) : (
-                      'KIKU'
-                    )}
+            <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
+              <div className="text-center font-semibold text-gray-800 mb-5">
+                <div className="px-3 pt-2 text-center text-[25px] text-black">
+                  <img
+                    src="/kikulg.ico"
+                    alt="Kiku icon"
+                    className="inline-block align-middle mr-2 w-10 h-10"
+                  />
+                  Kiku
+                </div>
+                <div className="px-3 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2">
+                  Empowering your growth through continous AI learning
+                </div>
+                <PromptRole />
+              </div>
+
+              {selectedConversation?.messages.length == 0 && (
+                <div className="text-gray-800 flex h-full flex-col space-y-4  p-4 ">
+                  <div className="md:flex items-start text-center gap-3.5">
+                    <div className=" flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
+                      <h2 className="flex gap-3 items-center m-auto text-lg font-semibold md:flex-col md:gap-2">
+                        <svg
+                          stroke="currentColor"
+                          fill="none"
+                          strokeWidth="1.5"
+                          viewBox="0 0 24 24"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-6 w-6"
+                          height="1em"
+                          width="1em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="12" cy="12" r="5"></circle>
+                          <line x1="12" y1="1" x2="12" y2="3"></line>
+                          <line x1="12" y1="21" x2="12" y2="23"></line>
+                          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                          <line
+                            x1="18.36"
+                            y1="18.36"
+                            x2="19.78"
+                            y2="19.78"
+                          ></line>
+                          <line x1="1" y1="12" x2="3" y2="12"></line>
+                          <line x1="21" y1="12" x2="23" y2="12"></line>
+                          <line
+                            x1="4.22"
+                            y1="19.78"
+                            x2="5.64"
+                            y2="18.36"
+                          ></line>
+                          <line
+                            x1="18.36"
+                            y1="5.64"
+                            x2="19.78"
+                            y2="4.22"
+                          ></line>
+                        </svg>
+                        Try these examples
+                      </h2>
+                      <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
+                        <li className="w-full bg-white p-3 rounded-md">
+                          What recipes can you suggest with the ingredients I'll
+                          send?
+                        </li>
+                        <li className="w-full bg-white p-3 rounded-md">
+                          Summarize the following paragraph I'll send you
+                        </li>
+                        <li className="w-full bg-white p-3 rounded-md">
+                          Generate a list of ideas for my baby's 1st birthday
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
+                      <h2 className="flex gap-3 items-center m-auto text-lg font-semibold md:flex-col md:gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                          className="h-6 w-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+                          ></path>
+                        </svg>
+                        Capabilities
+                      </h2>
+                      <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
+                        <li className="w-full bg-white p-3 rounded-md">
+                          You can chat with different personalities, topics, and
+                          languages.
+                        </li>
+                        <li className="w-full bg-white p-3 rounded-md">
+                          Instantly generate endless pictures of anything you
+                          can imagine. Try the Image Generation feature!
+                        </li>
+                        <li className="w-full bg-white p-3 rounded-md">
+                          Ask and you'll be answered, Kiku's huge knowledge base
+                          has got you covered.
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
-                  {models.length > 0 && (
-                    <div className="flex h-full flex-col space-y-4 rounded-lg border border-neutral-200 p-4 dark:border-neutral-600">
-                      <div className="md:flex items-start text-center gap-3.5">
-                        <div className="flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
-                          <h2 className="flex gap-3 items-center m-auto text-lg font-normal md:flex-col md:gap-2">
-                            <svg
-                              stroke="currentColor"
-                              fill="none"
-                              strokeWidth="1.5"
-                              viewBox="0 0 24 24"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-6 w-6"
-                              height="1em"
-                              width="1em"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <circle cx="12" cy="12" r="5"></circle>
-                              <line x1="12" y1="1" x2="12" y2="3"></line>
-                              <line x1="12" y1="21" x2="12" y2="23"></line>
-                              <line
-                                x1="4.22"
-                                y1="4.22"
-                                x2="5.64"
-                                y2="5.64"
-                              ></line>
-                              <line
-                                x1="18.36"
-                                y1="18.36"
-                                x2="19.78"
-                                y2="19.78"
-                              ></line>
-                              <line x1="1" y1="12" x2="3" y2="12"></line>
-                              <line x1="21" y1="12" x2="23" y2="12"></line>
-                              <line
-                                x1="4.22"
-                                y1="19.78"
-                                x2="5.64"
-                                y2="18.36"
-                              ></line>
-                              <line
-                                x1="18.36"
-                                y1="5.64"
-                                x2="19.78"
-                                y2="4.22"
-                              ></line>
-                            </svg>
-                            Examples
-                          </h2>
-                          <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Explain quantum computing in simple terms →
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Got any creative ideas for a 10 year old’s
-                              birthday? →
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              How do I make an HTTP request in Javascript? →
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
-                          <h2 className="flex gap-3 items-center m-auto text-lg font-normal md:flex-col md:gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                              className="h-6 w-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-                              ></path>
-                            </svg>
-                            Capabilities
-                          </h2>
-                          <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Remembers what user said earlier in the
-                              conversation
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Allows user to provide follow-up corrections
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Trained to decline inappropriate requests
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
-                          <h2 className="flex gap-3 items-center m-auto text-lg font-normal md:flex-col md:gap-2">
-                            <svg
-                              stroke="currentColor"
-                              fill="none"
-                              strokeWidth="1.5"
-                              viewBox="0 0 24 24"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-6 w-6"
-                              height="1em"
-                              width="1em"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                              <line x1="12" y1="9" x2="12" y2="13"></line>
-                              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                            Limitations
-                          </h2>
-                          <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              May occasionally generate incorrect information
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              May occasionally produce harmful instructions or
-                              biased content
-                            </li>
-                            <li className="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md">
-                              Limited knowledge of world and events after 2021
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      {/* <ModelSelect />
+                  {/* <ModelSelect />
 
                       <SystemPrompt
                         conversation={selectedConversation}
@@ -545,44 +517,37 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           })
                         }
                       /> */}
-                    </div>
-                  )}
                 </div>
-              </>
-            ) : (
-              <>
-                {showSettings && (
-                  <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
-                    <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
-                      <ModelSelect />
-                    </div>
-                  </div>
-                )}
+              )}
+            </div>
 
-                {selectedConversation?.messages.map((message, index) => (
-                  <MemoizedChatMessage
-                    key={index}
-                    message={message}
-                    messageIndex={index}
-                    onEdit={(editedMessage) => {
-                      setCurrentMessage(editedMessage);
-                      // discard edited message and the ones that come after then resend
-                      handleSend(
-                        editedMessage,
-                        selectedConversation?.messages.length - index,
-                      );
-                    }}
-                  />
-                ))}
+            {/* {showSettings && (
+              <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
+                <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
+                  <ModelSelect />
+                </div>
+              </div>
+            )} */}
 
-                {loading && <ChatLoader />}
+            {selectedConversation?.messages.map((message, index) => (
+              <MemoizedChatMessage
+                key={index}
+                message={message}
+                messageIndex={index}
+                onEdit={(editedMessage) => {
+                  setCurrentMessage(editedMessage);
+                  // discard edited message and the ones that come after then resend
+                  handleSend(
+                    editedMessage,
+                    selectedConversation?.messages.length - index,
+                  );
+                }}
+              />
+            ))}
 
-                <div
-                  className="h-[162px] bg-white dark:bg-[#343541]"
-                  ref={messagesEndRef}
-                />
-              </>
-            )}
+            {loading && <ChatLoader />}
+
+            <div className="h-[162px] bg-[] " ref={messagesEndRef} />
           </div>
 
           <ChatInput

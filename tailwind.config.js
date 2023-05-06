@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+
+const withMT = require('@material-tailwind/react/utils/withMT');
+module.exports = withMT({
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -7,7 +9,11 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      margin: {
+        '500px': '500px',
+      },
+    },
   },
   variants: {
     extend: {
@@ -15,4 +21,4 @@ module.exports = {
     },
   },
   plugins: [require('@tailwindcss/typography')],
-};
+});

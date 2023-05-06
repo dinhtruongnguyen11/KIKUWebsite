@@ -2,7 +2,10 @@ import {
   IconArrowDown,
   IconBolt,
   IconBrandGoogle,
+  IconHighlight,
+  IconLoader2,
   IconMicrophone,
+  IconPhotoEdit,
   IconPlayerRecord,
   IconPlayerStop,
   IconRepeat,
@@ -24,12 +27,11 @@ import { Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 
+import fetchGoogleSheetData from '@/pages/api/fetchGoogleSheetData';
 import HomeContext from '@/pages/api/home/home.context';
 
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
-
-import { BlobOptions } from 'buffer';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -65,8 +67,6 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedRole, setSelectedRole] = useState('');
-  const [isRoleChanged, setIsRoleChanged] = useState<boolean>(false);
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -102,17 +102,9 @@ export const ChatInput = ({
       return;
     }
 
-    let submitValue: string = '';
-
-    if (isRoleChanged && selectedConversation)
-      selectedConversation.prompt = selectedRole;
-
-    console.log(selectedConversation);
-
     onSend({ role: 'user', content }, plugin);
     setContent('');
     setPlugin(null);
-    setIsRoleChanged(false);
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
       textareaRef.current.blur();
@@ -146,33 +138,6 @@ export const ChatInput = ({
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
     return mobileRegex.test(userAgent);
   };
-
-  function renderOptionsByType(list: Prompt[]) {
-    const types = Array.from(new Set(list.map((item) => item.type)));
-    return types.map((type) => (
-      <optgroup key={type} label={type}>
-        {list
-          .filter((item) => item.type === type)
-          .map((item) => (
-            <option key={item.id} value={item.content}>
-              {item.name}
-            </option>
-          ))}
-      </optgroup>
-    ));
-  }
-
-  function handleSelectRoleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setSelectedRole(event.target.value);
-    setIsRoleChanged(true);
-  }
-
-  function handleSelectPromptType(event: React.ChangeEvent<HTMLSelectElement>) {
-    if (selectedConversation)
-      selectedConversation.promptType = event.target.value;
-
-    console.log(selectedConversation?.promptType);
-  }
 
   const handleInitModal = () => {
     const selectedPrompt = filteredPrompts[activePromptIndex];
@@ -308,44 +273,101 @@ export const ChatInput = ({
     };
   }, []);
 
+  const [selectedOption, setSelectedOption] = useState('text');
+
+  const handleOptionChange = (event: any) => {
+    setSelectedOption(event.target.value);
+    if (selectedConversation)
+      selectedConversation.promptType = event.target.value;
+    console.log(selectedConversation?.promptType);
+  };
+
   return (
-    <div className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-6 dark:border-white/20 dark:via-[#343541] dark:to-[#343541] md:pt-2">
+    <div className="absolute bottom-0 left-0 w-full border-transparent bg-[#EBF2FC]  pt-6 dark:border-white/20 md:pt-2">
       <div className="stretch mx-2 mt-4 flex flex-row last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
         {messageIsStreaming && (
           <button
-            className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
+            className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded-lg  bg-white py-2 px-4 text-gray-800 hover:opacity-50  md:mb-0 md:mt-2"
             onClick={handleStopConversation}
           >
             <IconPlayerStop size={16} /> {t('Stop Generating')}
           </button>
         )}
 
+        <div className="absolute top-4 flex pl-11 ">
+          <div>
+            <input
+              type="radio"
+              id="hosting-small"
+              name="hosting"
+              value="text"
+              className="hidden peer"
+              checked={selectedOption === 'text'}
+              onChange={handleOptionChange}
+            />
+            <label
+              htmlFor="hosting-small"
+              className="inline-flex items-center justify-between px-1 py-3 text-gray-300 cursor-pointer hover:text-gray-800 peer-checked:text-gray-800"
+            >
+              <div className="w-full ml-1">Text</div>
+            </label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="hosting-big"
+              name="hosting-big"
+              value="image"
+              className="hidden peer"
+              checked={selectedOption === 'image'}
+              onChange={handleOptionChange}
+            />
+            <label
+              htmlFor="hosting-big"
+              className=" inline-flex items-center justify-between px-2 py-3 text-gray-300 cursor-pointer hover:text-gray-600 peer-checked:text-gray-800"
+            >
+              <div className="w-full ml-1">Image</div>
+            </label>
+          </div>
+        </div>
+
         {!messageIsStreaming &&
           selectedConversation &&
           selectedConversation.messages.length > 0 && (
             <button
-              className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
+              className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3  bg-white py-2 px-4 text-gray-800 hover:opacity-50 rounded-lg md:mb-0 md:mt-2"
               onClick={onRegenerate}
             >
               <IconRepeat size={16} /> {t('Regenerate response')}
             </button>
           )}
 
-        <div className="relative sm:ml-4 flex w-auto flex-grow flex-col rounded-l-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
-          <select
-            id="default"
-            className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
-            onChange={handleSelectPromptType}
+        {/* <select
+          id="default"
+          className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50 absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
+          onChange={handleSelectPromptType}
+        >
+          <option value="text">Text</option>
+          <option value="image">Image</option>
+        </select> */}
+
+        <div className="relative flex w-auto flex-grow ">
+          <button
+            className="absolute left-2 top-2 text-gray-900  opacity-60  hover:text-neutral-900 "
+            onClick={handleRecord}
           >
-            <option value="text">Text</option>
-            <option value="image">Image</option>
-          </select>
+            {isRecording ? (
+              <IconPlayerRecord size={30} />
+            ) : (
+              <IconMicrophone size={30} />
+            )}
+          </button>
         </div>
 
-        <div className="relative sm:mr-2 flex w-8/12 flex-grow flex-col rounded-r-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+        <div className="relative sm:mx-2 flex w-10/12 flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)]  text-gray-800">
           <textarea
             ref={textareaRef}
-            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-5"
+            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent  md:py-3 md:pl-5"
             style={{
               resize: 'none',
               bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -356,9 +378,7 @@ export const ChatInput = ({
                   : 'hidden'
               }`,
             }}
-            placeholder={
-              t('Type a message or type "/" to select a prompt...') || ''
-            }
+            placeholder={t('Ask what you want') || ''}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}
@@ -367,18 +387,7 @@ export const ChatInput = ({
             onKeyDown={handleKeyDown}
           />
 
-          <button
-            className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={handleSend}
-          >
-            {messageIsStreaming ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
-            ) : (
-              <IconSend size={18} />
-            )}
-          </button>
-
-          {showScrollDownButton && (
+          {/* {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:bottom-0 lg:-right-10">
               <button
                 className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-neutral-200"
@@ -387,7 +396,7 @@ export const ChatInput = ({
                 <IconArrowDown size={18} />
               </button>
             </div>
-          )}
+          )} */}
 
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
@@ -411,44 +420,21 @@ export const ChatInput = ({
           )}
         </div>
 
-        <div className="relative sm:mr-4 flex w-auto flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+        <div className="relative flex w-auto flex-grow  ">
           <button
-            className="absolute left-2.5 top-2 rounded-sm p-1 text-neutral-800 opacity-60  hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 "
-            onClick={handleRecord}
+            className={`absolute mb-2 -top-2 p-3 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
+              messageIsStreaming ? 'bg-gray-500' : 'bg-[#FF4500]'
+            }`}
+            onClick={handleSend}
           >
-            {isRecording ? (
-              <IconPlayerRecord size={20} />
-            ) : (
-              <IconMicrophone size={20} />
-            )}
+            <IconSend size={35} />
           </button>
         </div>
       </div>
 
-      <div className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:mt-[5px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
-        <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
-          <select
-            id="default"
-            className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50"
-            onChange={handleSelectRoleChange}
-          >
-            {renderOptionsByType(roleList)}
-          </select>
-        </div>
-      </div>
-
-      <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-        <a
-          href="https://kiku.do"
-          target="_blank"
-          rel="noreferrer"
-          className="underline"
-        >
-          KIKU
-        </a>
-        .{' '}
+      <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50  md:px-4 md:pt-3 md:pb-6">
         {t(
-          "KIKU is an advanced chatbot for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
+          'KIKU is a cutting-edge chatbot that leverages the most powerful chat models to ceate engaging and realistic conversations.',
         )}
       </div>
     </div>

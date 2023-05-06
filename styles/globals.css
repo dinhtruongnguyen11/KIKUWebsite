@@ -41,3 +41,23 @@ html {
 pre:has(div.codeblock) {
   padding: 0;
 }
+
+
+div.grid.text-blue-gray-400 {
+  color:white
+}
+
+.pointer-events-none {
+  display: none !important;
+}
+
+li.transition-all{
+  text-align: left;
+  color: rgb(66 66 66 / var(--tw-text-opacity));
+}
+
+span.absolute {
+  font-weight: bold;
+}
+
+
