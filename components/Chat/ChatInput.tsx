@@ -309,6 +309,7 @@ export const ChatInput = ({
               htmlFor="hosting-small"
               className="inline-flex items-center justify-between px-1 py-3 text-gray-300 cursor-pointer hover:text-gray-800 peer-checked:text-gray-800"
             >
+              <IconHighlight size={30} />
               <div className="w-full ml-1">Text</div>
             </label>
           </div>
@@ -326,6 +327,7 @@ export const ChatInput = ({
               htmlFor="hosting-big"
               className=" inline-flex items-center justify-between px-2 py-3 text-gray-300 cursor-pointer hover:text-gray-600 peer-checked:text-gray-800"
             >
+              <IconPhotoEdit size={30} />
               <div className="w-full ml-1">Image</div>
             </label>
           </div>
