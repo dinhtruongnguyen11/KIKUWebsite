@@ -448,14 +448,15 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       </h2>
                       <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
                         <li className="w-full bg-white p-3 rounded-md">
-                          What recipes can you suggest with the ingredients I'll
-                          send?
+                          What recipes can you suggest with the ingredients
+                          I&#39;ll send?
                         </li>
                         <li className="w-full bg-white p-3 rounded-md">
-                          Summarize the following paragraph I'll send you
+                          Summarize the following paragraph I&#39;ll send you
                         </li>
                         <li className="w-full bg-white p-3 rounded-md">
-                          Generate a list of ideas for my baby's 1st birthday
+                          Generate a list of ideas for my baby&#39;s 1st
+                          birthday
                         </li>
                       </ul>
                     </div>
@@ -488,8 +489,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           can imagine. Try the Image Generation feature!
                         </li>
                         <li className="w-full bg-white p-3 rounded-md">
-                          Ask and you'll be answered, Kiku's huge knowledge base
-                          has got you covered.
+                          Ask and you&#39;ll be answered, Kiku&#39;s huge
+                          knowledge base has got you covered.
                         </li>
                       </ul>
                     </div>
