@@ -61,7 +61,9 @@ const Sidebar = <T,>({
       >
         <div className="flex items-center">
           <button
-            className="bg-[#FF4500] w-4/5 mb-0 text-sidebar flex  flex-shrink-0 cursor-pointer select-none items-center gap-1 rounded-xl  p-3 text-white transition-colors duration-200 "
+            className={`bg-[#FF4500] ${
+              side == 'right' ? 'w-[168px]' : 'w-full'
+            } mb-0 text-sidebar flex  flex-shrink-0 cursor-pointer select-none items-center gap-1 rounded-xl  p-3 text-white transition-colors duration-200`}
             onClick={() => {
               handleCreateItem();
               handleSearchTerm('');
@@ -72,7 +74,9 @@ const Sidebar = <T,>({
           </button>
 
           <button
-            className={`border w-auto ml-2 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-xl p-3 text-sm text-white transition-colors duration-200`}
+            className={`${
+              side == 'left' ? 'hidden' : ''
+            } border w-auto ml-2 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-xl p-3 text-sm text-white transition-colors duration-200`}
             onClick={handleCreateFolder}
           >
             <IconFolderPlus size={18} />
