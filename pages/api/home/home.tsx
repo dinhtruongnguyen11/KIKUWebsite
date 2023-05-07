@@ -1,5 +1,13 @@
+import {
+  ArrowLongRightIcon,
+  ArrowPathIcon,
+  BookmarkIcon,
+  CloudArrowUpIcon,
+  StarIcon,
+} from '@heroicons/react/24/outline';
 import { ThemeProvider } from '@material-tailwind/react';
-import { useEffect, useRef, useState } from 'react';
+import { Button } from '@material-tailwind/react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { GetServerSideProps } from 'next';
@@ -36,6 +44,7 @@ import { Chat } from '@/components/Chat/Chat';
 import { Chatbar } from '@/components/Chatbar/Chatbar';
 import { Navbar } from '@/components/Mobile/Navbar';
 import Promptbar from '@/components/Promptbar';
+import LanguageSwitch from '@/components/Settings/LanguageSwitch';
 
 import HomeContext from './home.context';
 import { HomeInitialState, initialState } from './home.state';
@@ -93,21 +102,6 @@ const Home = ({
     },
     { enabled: true, refetchOnMount: false },
   );
-
-  // const fetchGoogleSheetData = async () => {
-  //   try {
-  //     const res = await fetch(
-  //       'https://sheet.best/api/sheets/5e4d94fd-503f-44ed-bdf4-1d3d29a49e81',
-  //     );
-  //     const data = await res.json();
-  //     const newData = data.map((item: any) => ({ ...item, id: uuidv4() }));
-  //     setSheetData(newData);
-  //     return newData;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   useEffect(() => {
     if (data) dispatch({ field: 'models', value: data });
   }, [data, dispatch]);
@@ -325,12 +319,6 @@ const Home = ({
       dispatch({ field: 'folders', value: JSON.parse(folders) });
     }
 
-    // fetchGoogleSheetData().then((roleList) => {
-    //   if (roleList) {
-    //     dispatch({ field: 'roleList', value: roleList });
-    //   }
-    // });
-
     const prompts = localStorage.getItem('prompts');
     if (prompts) {
       dispatch({ field: 'prompts', value: JSON.parse(prompts) });
@@ -382,19 +370,29 @@ const Home = ({
     serverSidePluginKeysSet,
   ]);
 
+  const {
+    state: { showPromptbar },
+    dispatch: homeDispatch,
+  } = contextValue;
+
+  const showPromptBar = () => {
+    homeDispatch({ field: 'showPromptbar', value: !showPromptbar });
+    localStorage.setItem('showPromptbar', JSON.stringify(!showPromptbar));
+  };
+
   return (
-    <HomeContext.Provider
-      value={{
-        ...contextValue,
-        handleNewConversation,
-        handleCreateFolder,
-        handleDeleteFolder,
-        handleUpdateFolder,
-        handleSelectConversation,
-        handleUpdateConversation,
-      }}
-    >
-      <ThemeProvider>
+    <ThemeProvider>
+      <HomeContext.Provider
+        value={{
+          ...contextValue,
+          handleNewConversation,
+          handleCreateFolder,
+          handleDeleteFolder,
+          handleUpdateFolder,
+          handleSelectConversation,
+          handleUpdateConversation,
+        }}
+      >
         <Head>
           <title>KIKU</title>
           <meta name="description" content="ChatGPT but better." />
@@ -422,12 +420,29 @@ const Home = ({
                 <Chat stopConversationRef={stopConversationRef} />
               </div>
 
+              <LanguageSwitch />
+
               <Promptbar />
+
+              <div
+                className={`fixed right-8 top-20 z-50  ${
+                  contextValue.state.showPromptbar ? 'hidden' : ''
+                }`}
+              >
+                <Button
+                  variant="gradient"
+                  color="light-blue"
+                  className="flex items-center gap-1 py-2"
+                  onClick={showPromptBar}
+                >
+                  <StarIcon className="h-5 w-5 mb-1" /> Favorites
+                </Button>
+              </div>
             </div>
           </main>
         )}
-      </ThemeProvider>
-    </HomeContext.Provider>
+      </HomeContext.Provider>
+    </ThemeProvider>
   );
 };
 export default Home;

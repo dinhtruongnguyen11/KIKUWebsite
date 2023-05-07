@@ -22,7 +22,7 @@ const Search: FC<Props> = ({ placeholder, searchTerm, onSearch }) => {
   return (
     <div className="relative flex items-center">
       <input
-        className="focus:outline-none w-full flex-1 rounded-md  bg-white px-4 py-3 pr-10 text-[14px] leading-3 text-gray-600"
+        className="focus:outline-none w-full flex-1 rounded-xl  bg-white px-4 py-3 pr-10 text-[14px] leading-3 text-gray-600"
         type="text"
         placeholder={t(placeholder) || ''}
         value={searchTerm}

@@ -47,7 +47,7 @@ div.grid.text-blue-gray-400 {
   color:white
 }
 
-.pointer-events-none {
+label.pointer-events-none {
   display: none !important;
 }
 
@@ -58,6 +58,15 @@ li.transition-all{
 
 span.absolute {
   font-weight: bold;
+}
+
+.prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
+  font-weight: 400;
+  color: white;
+}
+
+nav.min-w-\[240px\]{
+  min-width: 0;
 }
 
 

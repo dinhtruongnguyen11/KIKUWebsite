@@ -422,14 +422,14 @@ export const ChatInput = ({
           )}
         </div>
 
-        <div className="relative flex w-auto flex-grow  ">
+        <div className="relative flex w-auto flex-grow">
           <button
-            className={`absolute mb-2 -top-2 p-3 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
+            className={`absolute mb-2 -top-1 p-2 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
               messageIsStreaming ? 'bg-gray-500' : 'bg-[#FF4500]'
             }`}
             onClick={handleSend}
           >
-            <IconSend size={35} />
+            <IconSend size={40} />
           </button>
         </div>
       </div>
