@@ -47,7 +47,7 @@ export const initialState: HomeInitialState = {
   prompts: [],
   roleList: [],
   temperature: 1,
-  showPromptbar: true,
+  showPromptbar: false,
   showChatbar: true,
   currentFolder: undefined,
   messageError: false,
