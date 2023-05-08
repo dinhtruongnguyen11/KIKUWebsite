@@ -472,8 +472,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           {t('Try these examples')}
                         </h2>
                         <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                          {exTextList.map((item) => (
+                          {exTextList.map((item, index) => (
                             <li
+                              key={index}
                               className="w-full bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
                               onClick={() => handleItemClick(t(item))}
                             >
@@ -530,8 +531,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           {t('Try these examples')}
                         </h2>
                         <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                          {exImageList.map((item) => (
+                          {exImageList.map((item, index) => (
                             <li
+                              key={index}
                               className="w-full bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
                               onClick={() => handleItemClick(item)}
                             >
