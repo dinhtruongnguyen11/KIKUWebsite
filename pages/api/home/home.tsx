@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ThemeProvider } from '@material-tailwind/react';
 import { Button } from '@material-tailwind/react';
+import { IconStarFilled } from '@tabler/icons-react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -395,25 +396,24 @@ const Home = ({
       >
         <Head>
           <title>KIKU</title>
-          <meta name="description" content="ChatGPT but better." />
+          <meta
+            name="description"
+            content="Empowering your growth through continous AI learning."
+          />
+
           <meta
             name="viewport"
-            content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
+            content="width=device-width, initial-scale = 1,user-scalable=no"
           />
+          <meta name="theme-color" content="#EBF2FC"></meta>
+
           <link rel="icon" href="/kikulg.ico" />
         </Head>
         {selectedConversation && (
           <main
-            className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
+            className={`flex h-[calc(100vh-80px)] sm:h-screen w-screen flex-col text-sm text-white bg-[#EBF2FC]`}
           >
-            <div className="fixed top-0 w-full sm:hidden">
-              <Navbar
-                selectedConversation={selectedConversation}
-                onNewConversation={handleNewConversation}
-              />
-            </div>
-
-            <div className="flex h-full w-full pt-[48px] sm:pt-0">
+            <div className="flex h-full w-full pt-5 sm:pt-0">
               <Chatbar />
 
               <div className="flex flex-1">
@@ -425,17 +425,17 @@ const Home = ({
               <Promptbar />
 
               <div
-                className={`fixed right-8 top-20 z-50  ${
-                  contextValue.state.showPromptbar ? 'hidden' : ''
+                className={`fixed right-8 top-20 z-50 hidden  ${
+                  contextValue.state.showPromptbar ? 'hidden' : 'lg:block'
                 }`}
               >
                 <Button
                   variant="gradient"
                   color="light-blue"
-                  className="flex items-center gap-1 py-2"
+                  className=" items-center gap-2 py-2  sm:flex hidden"
                   onClick={showPromptBar}
                 >
-                  <StarIcon className="h-5 w-5 mb-1" /> Favorites
+                  <IconStarFilled className="mb-1" size={20} /> {t('Favorites')}
                 </Button>
               </div>
             </div>

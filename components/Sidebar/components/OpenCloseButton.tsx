@@ -1,4 +1,13 @@
-import { IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react';
+import {
+  IconArrowBarLeft,
+  IconArrowBarRight,
+  IconMessage,
+  IconMessages,
+  IconStarFilled,
+} from '@tabler/icons-react';
+import { useContext } from 'react';
+
+import HomeContext from '@/pages/api/home/home.context';
 
 interface Props {
   onClick: any;
@@ -9,14 +18,14 @@ export const CloseSidebarButton = ({ onClick, side }: Props) => {
   return (
     <>
       <button
-        className={`fixed top-5 ${
-          side === 'right' ? 'right-[220px]' : 'left-[220px] hidden'
-        } z-50 h-7 w-7 text-white sm:top-0.5 sm:${
-          side === 'right' ? 'right-[220px]' : 'left-[220px]'
-        } sm:h-8 sm:w-8 `}
+        className={`fixed bg-[#2AAAE3] p-2 top-[80px] ${
+          side === 'right'
+            ? 'right-[260px] rounded-l-lg'
+            : 'left-[260px] rounded-r-lg'
+        } z-50  text-white  `}
         onClick={onClick}
       >
-        {side === 'right' ? <IconArrowBarRight /> : <IconArrowBarLeft />}
+        {side === 'right' ? <IconStarFilled /> : <IconMessages />}
       </button>
       <div
         onClick={onClick}
@@ -27,16 +36,19 @@ export const CloseSidebarButton = ({ onClick, side }: Props) => {
 };
 
 export const OpenSidebarButton = ({ onClick, side }: Props) => {
+  const {
+    state: { showChatbar, showPromptbar },
+  } = useContext(HomeContext);
   return (
     <button
-      className={`fixed top-2.5 ${
-        side === 'right' ? 'right-2 hidden' : 'left-2'
-      } z-50 h-7 w-7 text-[#FF4500]  sm:top-0.5 sm:${
-        side === 'right' ? 'right-2' : 'left-2'
-      } sm:h-8 sm:w-8 `}
+      className={`fixed bg-[#2AAAE3] p-2  top-[80px]  ${
+        side === 'right'
+          ? 'right-0 rounded-l-xl lg:hidden border-l'
+          : 'left-0 rounded-r-xl border-r'
+      } z-20 text-white  ${showChatbar || showPromptbar ? 'hidden' : ''}`}
       onClick={onClick}
     >
-      {side === 'right' ? <IconArrowBarLeft /> : <IconArrowBarRight />}
+      {side === 'right' ? <IconStarFilled /> : <IconMessages />}
     </button>
   );
 };

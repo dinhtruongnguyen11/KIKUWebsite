@@ -9,24 +9,26 @@ import HomeContext from '@/pages/api/home/home.context';
 
 export const PromptRole = () => {
   const { t } = useTranslation('chat');
-  const [selectedRole, setSelectedRole] = useState<any>('Virtual Assistant');
+  const [selectedRole, setSelectedRole] = useState<any>('');
   const [options, setOptions] = useState<Prompt[]>([]);
   const {
-    state: { selectedConversation, messageIsStreaming, prompts, roleList },
+    state: { selectedConversation, language, showChatbar, showPromptbar },
 
     dispatch: homeDispatch,
   } = useContext(HomeContext);
 
   function renderOptionsByType() {
-    return options.map((item) => (
-      <Coption
-        key={item.id}
-        className="bg-white text-black/50"
-        value={item.name}
-      >
-        {item.name}
-      </Coption>
-    ));
+    return options
+      .filter((item) => item.status === 'A')
+      .map((item) => (
+        <Coption
+          key={item.id}
+          className="bg-white text-black/50"
+          value={item.content}
+        >
+          {language === 'en' ? item.name : item.name_es}
+        </Coption>
+      ));
   }
 
   function handleSelectRoleChange(value: any) {
@@ -37,16 +39,27 @@ export const PromptRole = () => {
   useEffect(() => {
     fetchGoogleSheetData().then((data) => {
       setOptions(data);
+
+      const tmp = data.filter((item: Prompt) => item.status === 'A');
+      if (tmp.length > 0) {
+        setSelectedRole(tmp[0].content);
+      }
     });
   }, []);
 
   return (
-    <div className="stretch flex items-center mt-8 justify-center ">
-      <span className="mr-4 text-xl font-bold">Let Kiku work for you as a</span>
-      <div className="relative flex flex-col w-40 z-50">
-        {options.length > 0 ? (
+    <div className="stretch flex flex-col sm:flex-row items-center mt-4 justify-center">
+      <span className="sm:mr-4 sm:text-xl text-2xl font-bold">
+        {t('Let Kiku work for you as a')}
+      </span>
+      <div
+        className={`${
+          showChatbar || showPromptbar ? 'z-0' : 'z-20'
+        } relative sm:w-40 w-72 mt-4 sm:mt-0 `}
+      >
+        {options.length > 0 && selectedRole ? (
           <Cselect
-            className="text-sm border-none outline-none text-white bg-[#FF4500] "
+            className="text-base -mt-1 h-12 sm:h-10 sm:-mt-0 border-none outline-none text-white bg-[#FF4500]"
             value={selectedRole}
             onChange={handleSelectRoleChange}
             lockScroll={true}

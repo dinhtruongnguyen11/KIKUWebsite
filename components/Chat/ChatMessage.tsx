@@ -137,22 +137,23 @@ export const ChatMessage: FC<Props> = memo(
 
     return (
       <div
-        className={`group md:px-4  my-8 rounded-xl lg:mx-96${
-          message.role === 'assistant'
-            ? ' text-white bg-[#2AAAE3]'
-            : ' text-gray-800 bg-white'
-        }`}
+        className={`group justify-center items-center flex flex-row md:px-4  my-8 rounded-xl mx-5 z-0`}
         style={{ overflowWrap: 'anywhere' }}
       >
-        <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6">
-          {/* <div className="min-w-[40px] text-right font-bold">
-            {message.role === 'assistant' ? (
-              <IconRobot size={30} />
-            ) : (
-              <IconUser size={30} />
-            )}
-          </div> */}
-
+        <div className="min-w-[40px] text-right font-bold text-gray-600 sm:hidden">
+          {message.role === 'assistant' ? (
+            <IconRobot size={30} />
+          ) : (
+            <IconUser size={30} />
+          )}
+        </div>
+        <div
+          className={`relative w-full rounded-xl m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 ${
+            message.role === 'assistant'
+              ? ' text-white bg-[#2AAAE3]'
+              : ' text-gray-800 bg-white'
+          }`}
+        >
           <div className="prose mt-[-2px] w-full ">
             {message.role === 'user' ? (
               <div className="flex w-full">
@@ -204,7 +205,7 @@ export const ChatMessage: FC<Props> = memo(
                 )}
 
                 {!isEditing && (
-                  <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                  <div className="md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                     <button
                       className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                       onClick={toggleEditing}
@@ -284,7 +285,7 @@ export const ChatMessage: FC<Props> = memo(
                         return (
                           <img
                             src={children.toString()}
-                            className="border border-neutral-200 p-4 dark:border-neutral-600 rounded-lg"
+                            className="bg-white w-full h-full rounded-xl"
                             alt="image"
                           />
                         );
@@ -304,7 +305,9 @@ export const ChatMessage: FC<Props> = memo(
                   }`}
                 </MemoizedReactMarkdown>
 
-                <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                <div
+                  className={`md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start `}
+                >
                   {messagedCopied ? (
                     <IconCheck size={20} className="text-white" />
                   ) : (

@@ -1,3 +1,4 @@
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import {
   IconArrowDown,
   IconBolt,
@@ -23,7 +24,7 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
-import { Message } from '@/types/chat';
+import { Conversation, Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 
@@ -277,85 +278,50 @@ export const ChatInput = ({
 
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
-    if (selectedConversation)
-      selectedConversation.promptType = event.target.value;
-    console.log(selectedConversation?.promptType);
+
+    if (selectedConversation) {
+      let updatedConversation: Conversation;
+      updatedConversation = {
+        ...selectedConversation,
+      };
+      updatedConversation.promptType = event.target.value;
+      homeDispatch({
+        field: 'selectedConversation',
+        value: updatedConversation,
+      });
+    }
   };
 
+  useEffect(() => {
+    selectedConversation && setSelectedOption(selectedConversation.promptType);
+  }, []);
+
   return (
-    <div className="absolute bottom-0 left-0 w-full border-transparent bg-[#EBF2FC]  pt-6 dark:border-white/20 md:pt-2">
-      <div className="stretch mx-2 mt-4 flex flex-row last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
+    <div className="absolute bottom-0 left-0 w-full border-transparent   pt-6 dark:border-white/20 md:pt-2 pb-2 sm:pb-0 bg-[#EBF2FC]">
+      <div className="stretch mx-2 mt-4 flex flex-row last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl justify-center">
         {messageIsStreaming && (
           <button
-            className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded-lg  bg-white py-2 px-4 text-gray-800 hover:opacity-50  md:mb-0 md:mt-2"
+            className="absolute top-0 left-0 right-0 mx-auto mb-3 hidden sm:flex w-fit items-center gap-3 rounded-lg  bg-white py-2 px-4 text-gray-800 hover:opacity-50  md:mb-0 md:mt-2"
             onClick={handleStopConversation}
           >
             <IconPlayerStop size={16} /> {t('Stop Generating')}
           </button>
         )}
 
-        <div className="absolute top-4 flex pl-11 ">
-          <div>
-            <input
-              type="radio"
-              id="hosting-small"
-              name="hosting"
-              value="text"
-              className="hidden peer"
-              checked={selectedOption === 'text'}
-              onChange={handleOptionChange}
-            />
-            <label
-              htmlFor="hosting-small"
-              className="inline-flex items-center justify-between px-1 py-3 text-gray-300 cursor-pointer hover:text-gray-800 peer-checked:text-gray-800"
-            >
-              <IconHighlight size={30} />
-              <div className="w-full ml-1">Text</div>
-            </label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="hosting-big"
-              name="hosting-big"
-              value="image"
-              className="hidden peer"
-              checked={selectedOption === 'image'}
-              onChange={handleOptionChange}
-            />
-            <label
-              htmlFor="hosting-big"
-              className=" inline-flex items-center justify-between px-2 py-3 text-gray-300 cursor-pointer hover:text-gray-600 peer-checked:text-gray-800"
-            >
-              <IconPhotoEdit size={30} />
-              <div className="w-full ml-1">Image</div>
-            </label>
-          </div>
-        </div>
-
         {!messageIsStreaming &&
           selectedConversation &&
           selectedConversation.messages.length > 0 && (
             <button
-              className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3  bg-white py-2 px-4 text-gray-800 hover:opacity-50 rounded-lg md:mb-0 md:mt-2"
+              className="absolute hidden sm:flex top-0 left-0 right-0 mx-auto mb-3 w-fit items-center gap-3  bg-white py-2 px-4 text-gray-800 hover:opacity-50 rounded-lg md:mb-0 md:mt-2"
               onClick={onRegenerate}
             >
               <IconRepeat size={16} /> {t('Regenerate response')}
             </button>
           )}
 
-        {/* <select
-          id="default"
-          className="focus:outline-none border-0 py-3 pl-2 lg:max-w-3xl text-sm rounded-lg dark:bg-[#40414F] dark:border-gray-600 dark:text-gray-400 text-black/50 absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
-          onChange={handleSelectPromptType}
-        >
-          <option value="text">Text</option>
-          <option value="image">Image</option>
-        </select> */}
-
-        <div className="relative flex w-auto flex-grow ">
+        <div className="relative flex ">
           <button
-            className="absolute left-2 top-2 text-gray-900  opacity-60  hover:text-neutral-900 "
+            className=" text-gray-900  opacity-60  hover:text-neutral-900 "
             onClick={handleRecord}
           >
             {isRecording ? (
@@ -366,10 +332,48 @@ export const ChatInput = ({
           </button>
         </div>
 
-        <div className="relative sm:mx-2 flex w-10/12 flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)]  text-gray-800">
+        <div className="relative mx-2 flex w-[70vw]  flex-col rounded-xl border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)]  text-gray-800">
+          <div className="absolute flex bottom-8">
+            <div>
+              <input
+                type="radio"
+                id="hosting-small"
+                name="hosting"
+                value="text"
+                className="hidden peer"
+                checked={selectedOption === 'text'}
+                onChange={handleOptionChange}
+              />
+              <label
+                htmlFor="hosting-small"
+                className="inline-flex items-center justify-between px-1 py-3 text-gray-300 cursor-pointer  peer-checked:text-gray-800"
+              >
+                <IconHighlight size={30} />
+                <div className="w-full ml-1">{t('Text')}</div>
+              </label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="hosting-big"
+                name="hosting-big"
+                value="image"
+                className="hidden peer"
+                checked={selectedOption === 'image'}
+                onChange={handleOptionChange}
+              />
+              <label
+                htmlFor="hosting-big"
+                className=" inline-flex items-center justify-between py-3 text-gray-300 cursor-pointer  peer-checked:text-gray-800"
+              >
+                <IconPhotoEdit size={30} />
+                <div className="w-full ml-1">{t('Image')}</div>
+              </label>
+            </div>
+          </div>
           <textarea
             ref={textareaRef}
-            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent  md:py-3 md:pl-5"
+            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-5 text-black dark:bg-transparent  md:py-3 md:pl-5"
             style={{
               resize: 'none',
               bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -388,8 +392,8 @@ export const ChatInput = ({
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           />
-
-          {/* {showScrollDownButton && (
+          {/* 
+          {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:bottom-0 lg:-right-10">
               <button
                 className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-neutral-200"
@@ -422,19 +426,19 @@ export const ChatInput = ({
           )}
         </div>
 
-        <div className="relative flex w-auto flex-grow">
+        <div className="relative flex">
           <button
-            className={`absolute mb-2 -top-1 p-2 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
+            className={` p-2.5 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
               messageIsStreaming ? 'bg-gray-500' : 'bg-[#FF4500]'
             }`}
             onClick={handleSend}
           >
-            <IconSend size={40} />
+            <PaperAirplaneIcon className="h-6 w-6 text-white" />
           </button>
         </div>
       </div>
 
-      <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50  md:px-4 md:pt-3 md:pb-6">
+      <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50  md:px-4 md:pt-3 md:pb-6 hidden sm:block">
         {t(
           'KIKU is a cutting-edge chatbot that leverages the most powerful chat models to ceate engaging and realistic conversations.',
         )}

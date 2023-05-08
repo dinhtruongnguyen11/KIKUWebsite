@@ -1,10 +1,7 @@
 {
-  "OpenAI API Key Required": "Se requiere la clave de API de OpenAI",
-  "Please set your OpenAI API key in the bottom left of the sidebar.": "Por favor, ingrese su clave de API de OpenAI en la esquina inferior izquierda de la barra lateral.",
   "Stop Generating": "Dejar de generar",
   "Prompt limit is {{maxLength}} characters": "El límite del mensaje es de {{maxLength}} caracteres",
   "System Prompt": "Mensaje del sistema",
-  "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.": "Eres ChatGPT, un modelo de lenguaje grande entrenado por OpenAI. Sigue las instrucciones del usuario cuidadosamente. Responde usando markdown.",
   "Enter a prompt": "Ingrese un mensaje",
   "Regenerate response": "Regenerar respuesta",
   "Sorry, there was an error.": "Lo sentimos, ha ocurrido un error.",
@@ -22,7 +19,29 @@
   "click if using a .env.local file": "haz clic si estás utilizando un archivo .env.local",
   "Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.": "El límite del mensaje es de {{maxLength}} caracteres. Has ingresado {{valueLength}} caracteres.",
   "Please enter a message": "Por favor, ingrese un mensaje",
-  "KIKU is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.": "Chatbot UI es un kit avanzado de chatbot para los modelos de chat de OpenAI que busca imitar la interfaz y funcionalidad de ChatGPT.",
   "Are you sure you want to clear all messages?": "¿Está seguro de que desea borrar todos los mensajes?",
-  "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.": "Valores más altos como 0,8 harán que la salida sea más aleatoria, mientras que valores más bajos como 0,2 la harán más enfocada y determinista."
+  "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.": "Valores más altos como 0,8 harán que la salida sea más aleatoria, mientras que valores más bajos como 0,2 la harán más enfocada y determinista.",
+  "KIKU is a cutting-edge chatbot that leverages the most powerful chat models to ceate engaging and realistic conversations.":"KIKU es un chatbot de vanguardia que utiliza los modelos de chat más potentes para crear conversaciones atractivas y realistas.",
+  "Ask what you want":"Pregunta lo que quieras",
+  "Text":"Texto",
+  "Image":"Imagen",
+  "Empowering your growth through continous AI learning":"Potenciando tu crecimiento a través del aprendizaje continuo de la inteligencia artificial",
+  "Let Kiku work for you as a":"Deja que Kiku trabaje para ti como un/a",
+  "Favorites":"Favoritos",
+  "Try these examples":"Prueba estos ejemplos",
+  "Capabilities":"Capabilities",
+
+  "You can chat with different personalities, topics, and languages.":"Puedes conversar con diferentes personalidades, temas e idiomas.",
+  "Instantly generate endless pictures of anything you can imagine. Try the Image Generation feature!":"Genera instantáneamente imágenes infinitas de cualquier cosa que puedas imaginar. ¡Prueba la función de Generación de Imágenes!",
+  "Ask and you'll be answered, Kiku's huge knowledge base has got you covered.":"Pregunta y recibirás respuesta, la enorme base de conocimiento de Kiku te tiene cubierto/a.",
+
+  "What recipes can you suggest with the ingredients I'll send?":"¿Qué recetas puedes sugerir con los ingredientes que te enviaré?",
+  "Summarize the following paragraph I'll send you":"Resuma el siguiente párrafo que me enviará.",
+  "Generate a list of ideas for my baby's 1st birthday":"Generar una lista de ideas para el primer cumpleaños de mi bebé",
+  "An image of a happy raccoon riding a bike in cartoon style":"Una imagen de un mapache feliz montando una bicicleta en estilo de dibujos animados",
+  "Portrait of a woman inside a mansion shot with a 50mm lens":"Retrato de una mujer dentro de una mansión tomado con una lente de 50mm",
+  "A profile angle shot of a robot and human looking at each other, realistic style":"Una toma en ángulo perfil de un robot y un humano mirándose el uno al otro, en estilo realista"
+
+
+
 }

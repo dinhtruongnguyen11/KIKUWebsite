@@ -21,16 +21,15 @@ import {
 import { throttle } from '@/utils/data/throttle';
 
 import { ChatBody, Conversation, Message } from '@/types/chat';
+import { ErrorMessage } from '@/types/error';
 import { Plugin } from '@/types/plugin';
 
 import HomeContext from '@/pages/api/home/home.context';
 
-import Spinner from '../Spinner';
 import { ChatInput } from './ChatInput';
 import { ChatLoader } from './ChatLoader';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
-import { ModelSelect } from './ModelSelect';
 import { PromptRole } from './PromptRole';
 
 // import { SystemPrompt } from './SystemPrompt';
@@ -64,6 +63,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const [currentMessage, setCurrentMessage] = useState<Message>();
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
   const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [promptType, setPromptType] = useState<string>('text');
   const [showScrollDownButton, setShowScrollDownButton] =
     useState<boolean>(false);
 
@@ -73,6 +73,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
+      // handleScrollDown();
       if (selectedConversation) {
         let updatedConversation: Conversation;
         if (deleteCount) {
@@ -103,8 +104,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           prompt: updatedConversation.prompt,
           temperature: updatedConversation.temperature,
         };
-
-        console.log(selectedConversation.promptType);
 
         if (selectedConversation.promptType === 'image') {
           console.log('image');
@@ -333,7 +332,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const throttledScrollDown = throttle(scrollDown, 250);
 
   useEffect(() => {
-    throttledScrollDown();
+    if (messageIsStreaming || loading) throttledScrollDown();
     selectedConversation &&
       setCurrentMessage(
         selectedConversation.messages[selectedConversation.messages.length - 2],
@@ -364,8 +363,26 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     };
   }, [messagesEndRef]);
 
+  const exTextList = [
+    "What recipes can you suggest with the ingredients I'll send?",
+    "Summarize the following paragraph I'll send you",
+    "Generate a list of ideas for my baby's 1st birthday",
+  ];
+
+  const exImageList = [
+    'An image of a happy raccoon riding a bike in cartoon style',
+    'Portrait of a woman inside a mansion shot with a 50mm lens',
+    'A profile angle shot of a robot and human looking at each other, realistic style',
+  ];
+
+  const handleItemClick = (value: any) => {
+    let message: Message;
+    message = { role: 'user', content: value };
+    handleSend(message, 0, null);
+  };
+
   return (
-    <div className="relative flex-1 overflow-hidden bg-[#EBF2FC]">
+    <div className="relative flex-1 overflow-hidden ">
       {!(apiKey || serverSideApiKeyIsSet) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-black dark:text-white">
@@ -386,9 +403,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
-            <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
-              <div className="text-center font-semibold text-gray-800 mb-5">
-                <div className="px-3 pt-2 text-center text-[25px] text-black">
+            <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-0 md:pt-12 sm:max-w-[600px] ">
+              <div className="text-center font-semibold text-gray-800 ">
+                <div className="px-3 text-center text-[25px] text-black">
                   <img
                     src="/kikulg.ico"
                     alt="Kiku icon"
@@ -396,72 +413,137 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   />
                   Kiku
                 </div>
-                <div className="px-3 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2">
-                  Empowering your growth through continous AI learning
+                <div className="sm:px-3 px-20 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2 ">
+                  {t('Empowering your growth through continous AI learning')}
                 </div>
                 <PromptRole />
               </div>
 
               {selectedConversation?.messages.length == 0 && (
-                <div className="text-gray-800 flex h-full flex-col space-y-4  p-4 ">
+                <div
+                  className={`text-gray-800 flex  flex-col  sm:p-4 px-14 ${selectedConversation.promptType}`}
+                >
                   <div className="md:flex items-start text-center gap-3.5">
-                    <div className=" flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
-                      <h2 className="flex gap-3 items-center m-auto text-lg font-semibold md:flex-col md:gap-2">
-                        <svg
-                          stroke="currentColor"
-                          fill="none"
-                          strokeWidth="1.5"
-                          viewBox="0 0 24 24"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-6 w-6"
-                          height="1em"
-                          width="1em"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle cx="12" cy="12" r="5"></circle>
-                          <line x1="12" y1="1" x2="12" y2="3"></line>
-                          <line x1="12" y1="21" x2="12" y2="23"></line>
-                          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                          <line
-                            x1="18.36"
-                            y1="18.36"
-                            x2="19.78"
-                            y2="19.78"
-                          ></line>
-                          <line x1="1" y1="12" x2="3" y2="12"></line>
-                          <line x1="21" y1="12" x2="23" y2="12"></line>
-                          <line
-                            x1="4.22"
-                            y1="19.78"
-                            x2="5.64"
-                            y2="18.36"
-                          ></line>
-                          <line
-                            x1="18.36"
-                            y1="5.64"
-                            x2="19.78"
-                            y2="4.22"
-                          ></line>
-                        </svg>
-                        Try these examples
-                      </h2>
-                      <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                        <li className="w-full bg-white p-3 rounded-md">
-                          What recipes can you suggest with the ingredients
-                          I&#39;ll send?
-                        </li>
-                        <li className="w-full bg-white p-3 rounded-md">
-                          Summarize the following paragraph I&#39;ll send you
-                        </li>
-                        <li className="w-full bg-white p-3 rounded-md">
-                          Generate a list of ideas for my baby&#39;s 1st
-                          birthday
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
-                      <h2 className="flex gap-3 items-center m-auto text-lg font-semibold md:flex-col md:gap-2">
+                    {selectedConversation.promptType == 'text' ? (
+                      <div className=" flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
+                        <h2 className="flex flex-col gap-3 items-center m-auto text-lg font-bold md:flex-col md:gap-2">
+                          <svg
+                            stroke="currentColor"
+                            fill="none"
+                            strokeWidth="1.5"
+                            viewBox="0 0 24 24"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                            height="1em"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line
+                              x1="4.22"
+                              y1="4.22"
+                              x2="5.64"
+                              y2="5.64"
+                            ></line>
+                            <line
+                              x1="18.36"
+                              y1="18.36"
+                              x2="19.78"
+                              y2="19.78"
+                            ></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line
+                              x1="4.22"
+                              y1="19.78"
+                              x2="5.64"
+                              y2="18.36"
+                            ></line>
+                            <line
+                              x1="18.36"
+                              y1="5.64"
+                              x2="19.78"
+                              y2="4.22"
+                            ></line>
+                          </svg>
+                          {t('Try these examples')}
+                        </h2>
+                        <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
+                          {exTextList.map((item) => (
+                            <li
+                              className="w-full bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
+                              onClick={() => handleItemClick(t(item))}
+                            >
+                              {t(item)}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <div className=" flex flex-col mb-8 md:mb-auto gap-3.5 flex-1">
+                        <h2 className="flex flex-col gap-3 items-center m-auto text-lg font-bold md:flex-col md:gap-2">
+                          <svg
+                            stroke="currentColor"
+                            fill="none"
+                            strokeWidth="1.5"
+                            viewBox="0 0 24 24"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                            height="1em"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line
+                              x1="4.22"
+                              y1="4.22"
+                              x2="5.64"
+                              y2="5.64"
+                            ></line>
+                            <line
+                              x1="18.36"
+                              y1="18.36"
+                              x2="19.78"
+                              y2="19.78"
+                            ></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line
+                              x1="4.22"
+                              y1="19.78"
+                              x2="5.64"
+                              y2="18.36"
+                            ></line>
+                            <line
+                              x1="18.36"
+                              y1="5.64"
+                              x2="19.78"
+                              y2="4.22"
+                            ></line>
+                          </svg>
+                          {t('Try these examples')}
+                        </h2>
+                        <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
+                          {exImageList.map((item) => (
+                            <li
+                              className="w-full bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
+                              onClick={() => handleItemClick(item)}
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="sm:flex hidden flex-col mb-8 md:mb-auto gap-3.5 flex-1 ">
+                      <h2 className="flex gap-3 items-center m-auto text-lg font-bold md:flex-col md:gap-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -477,58 +559,30 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                             d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
                           ></path>
                         </svg>
-                        Capabilities
+                        {t('Capabilities')}
                       </h2>
                       <ul className="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                        <li className="w-full bg-white p-3 rounded-md">
-                          You can chat with different personalities, topics, and
-                          languages.
+                        <li className="w-full bg-white p-3 rounded-lg">
+                          {t(
+                            'You can chat with different personalities, topics, and languages.',
+                          )}
                         </li>
-                        <li className="w-full bg-white p-3 rounded-md">
-                          Instantly generate endless pictures of anything you
-                          can imagine. Try the Image Generation feature!
+                        <li className="w-full bg-white p-3 rounded-lg">
+                          {t(
+                            'Instantly generate endless pictures of anything you can imagine. Try the Image Generation feature!',
+                          )}
                         </li>
-                        <li className="w-full bg-white p-3 rounded-md">
-                          Ask and you&#39;ll be answered, Kiku&#39;s huge
-                          knowledge base has got you covered.
+                        <li className="w-full bg-white p-3 rounded-lg">
+                          {t(
+                            "Ask and you'll be answered, Kiku's huge knowledge base has got you covered.",
+                          )}
                         </li>
                       </ul>
                     </div>
                   </div>
-
-                  {/* <ModelSelect />
-
-                      <SystemPrompt
-                        conversation={selectedConversation}
-                        prompts={prompts}
-                        onChangePrompt={(prompt) =>
-                          handleUpdateConversation(selectedConversation, {
-                            key: 'prompt',
-                            value: prompt,
-                          })
-                        }
-                      />
-
-                      <TemperatureSlider
-                        label={t('Temperature')}
-                        onChangeTemperature={(temperature) =>
-                          handleUpdateConversation(selectedConversation, {
-                            key: 'temperature',
-                            value: temperature,
-                          })
-                        }
-                      /> */}
                 </div>
               )}
             </div>
-
-            {/* {showSettings && (
-              <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
-                <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
-                  <ModelSelect />
-                </div>
-              </div>
-            )} */}
 
             {selectedConversation?.messages.map((message, index) => (
               <MemoizedChatMessage
@@ -548,7 +602,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
             {loading && <ChatLoader />}
 
-            <div className="h-[162px] bg-[] " ref={messagesEndRef} />
+            <div className="md:h-[162px] h-[100px] " ref={messagesEndRef} />
           </div>
 
           <ChatInput

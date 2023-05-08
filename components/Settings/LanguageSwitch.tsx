@@ -21,7 +21,11 @@ import HomeContext from '@/pages/api/home/home.context';
 export default function LanguageSwitch() {
   const { t, i18n } = useTranslation('settings');
   const [selectedOption, setSelectedOption] = useState('es');
-  const { dispatch: homeDispatch } = useContext(HomeContext);
+  const {
+    state: { showChatbar, showPromptbar },
+    dispatch: homeDispatch,
+  } = useContext(HomeContext);
+
   const settings: Settings = getSettings();
   const { state, dispatch } = useCreateReducer<Settings>({
     initialState: settings,
@@ -44,7 +48,11 @@ export default function LanguageSwitch() {
   });
 
   return (
-    <div className="absolute flex top-4 right-10 z-40">
+    <div
+      className={`${
+        showChatbar ? '' : 'lg:block hidden'
+      } absolute flex top-4 left-5 lg:left-[91vw]  z-40`}
+    >
       <Card className="w-full max-w-[24rem]">
         <List className="flex-row">
           <ListItem className="p-0">
