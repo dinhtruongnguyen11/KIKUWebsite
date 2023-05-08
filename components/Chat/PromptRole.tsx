@@ -54,7 +54,7 @@ export const PromptRole = () => {
       </span>
       <div
         className={`${
-          showChatbar || showPromptbar ? 'z-0' : 'z-20'
+          showChatbar || showPromptbar ? 'z-0 sm:z-20' : 'z-20'
         } relative sm:w-40 w-72 mt-4 sm:mt-0 `}
       >
         {options.length > 0 && selectedRole ? (
