@@ -49,7 +49,11 @@ export const PromptRole = () => {
 
   return (
     <div className="stretch flex flex-col sm:flex-row items-center mt-4 justify-center">
-      <span className="sm:mr-4 sm:text-xl text-2xl font-bold">
+      <span
+        className={`sm:mr-4 sm:text-xl  font-bold ${
+          language === 'en' ? 'text-2xl' : 'text-lg'
+        }`}
+      >
         {t('Let Kiku work for you as a')}
       </span>
       <div
