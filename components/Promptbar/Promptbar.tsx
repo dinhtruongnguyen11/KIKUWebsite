@@ -53,6 +53,8 @@ const Promptbar = () => {
         type: '',
         model: OpenAIModels[defaultModelId],
         folderId: null,
+        name_es: `Prompt ${prompts.length + 1}`,
+        status: 'A',
       };
 
       const updatedPrompts = [...prompts, newPrompt];
