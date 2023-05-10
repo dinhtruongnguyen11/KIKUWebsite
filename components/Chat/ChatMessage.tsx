@@ -162,7 +162,7 @@ export const ChatMessage: FC<Props> = memo(
                   <div className="flex w-full flex-col">
                     <textarea
                       ref={textareaRef}
-                      className="w-full resize-none whitespace-pre-wrap border-none dark:bg-[#343541]"
+                      className="outline-none w-full resize-none whitespace-pre-wrap border-none rounded-lg p-2"
                       value={messageContent}
                       onChange={handleInputChange}
                       onKeyDown={handlePressEnter}
@@ -172,22 +172,22 @@ export const ChatMessage: FC<Props> = memo(
                         fontFamily: 'inherit',
                         fontSize: 'inherit',
                         lineHeight: 'inherit',
-                        padding: '0',
-                        margin: '0',
+                        // padding: '0',
+                        // margin: '0',
                         overflow: 'hidden',
                       }}
                     />
 
                     <div className="mt-10 flex justify-center space-x-4">
                       <button
-                        className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
+                        className="h-[40px] rounded-md bg-[#FF4500] px-4 py-1 text-sm font-medium text-white disabled:opacity-50"
                         onClick={handleEditMessage}
                         disabled={messageContent.trim().length <= 0}
                       >
                         {t('Save & Submit')}
                       </button>
                       <button
-                        className="h-[40px] rounded-md border border-neutral-300 px-4 py-1 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                        className="h-[40px] rounded-md border border-neutral-300 px-4 py-1 text-sm font-medium text-white hover:bg-neutral-100 "
                         onClick={() => {
                           setMessageContent(message.content);
                           setIsEditing(false);
@@ -208,13 +208,13 @@ export const ChatMessage: FC<Props> = memo(
                 {!isEditing && (
                   <div className="md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                     <button
-                      className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                      className="invisible group-hover:visible focus:visible text-white"
                       onClick={toggleEditing}
                     >
                       <IconEdit size={20} />
                     </button>
                     <button
-                      className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                      className="invisible group-hover:visible focus:visible text-white "
                       onClick={handleDeleteMessage}
                     >
                       <IconTrash size={20} />
@@ -312,10 +312,10 @@ export const ChatMessage: FC<Props> = memo(
                   className={`md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start `}
                 >
                   {messagedCopied ? (
-                    <IconCheck size={20} className="text-white" />
+                    <IconCheck size={20} className="text-gray-800" />
                   ) : (
                     <button
-                      className="invisible group-hover:visible focus:visible text-white"
+                      className="invisible group-hover:visible focus:visible text-gray-800"
                       onClick={copyOnClick}
                     >
                       <IconCopy size={20} />
