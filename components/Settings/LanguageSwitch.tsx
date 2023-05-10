@@ -49,16 +49,16 @@ export default function LanguageSwitch() {
 
   return (
     <div
-      className={`${
-        showChatbar ? '' : 'lg:block hidden'
+      className={`${showChatbar ? '' : 'lg:block hidden'} ${
+        showPromptbar ? 'lg:hidden' : ''
       } absolute flex top-4 left-5 lg:left-[91vw]  z-40`}
     >
-      <Card className="w-full max-w-[24rem]">
-        <List className="flex-row">
+      <Card className="w-full max-w-[24rem] ">
+        <List className="flex-row  py-2 px-1.5">
           <ListItem className="p-0">
             <label
               htmlFor="horizontal-list-vue"
-              className="px-2 py-0.5 flex items-center w-full cursor-pointer"
+              className="flex items-center w-full cursor-pointer mx-1"
             >
               <ListItemPrefix className="hidden">
                 <Radio
@@ -77,14 +77,14 @@ export default function LanguageSwitch() {
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg"
                 alt="Flag of Spain"
-                className="w-10  h-6"
+                className="w-8  h-5"
               />
             </label>
           </ListItem>
           <ListItem className="p-0">
             <label
               htmlFor="horizontal-list-react"
-              className="px-2 flex items-center w-full cursor-pointer"
+              className="flex items-center w-full cursor-pointer  mx-1"
             >
               <ListItemPrefix className="hidden">
                 <Radio
@@ -103,7 +103,7 @@ export default function LanguageSwitch() {
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg"
                 alt="Flag of United Kingdom"
-                className="w-10 h-6"
+                className="w-8 h-5"
               />
             </label>
           </ListItem>

@@ -333,7 +333,7 @@ export const ChatInput = ({
         </div>
 
         <div className="relative mx-2 flex w-[70vw]  flex-col rounded-xl border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)]  text-gray-800">
-          <div className="absolute flex bottom-8">
+          <div className="absolute flex -top-9">
             <div>
               <input
                 type="radio"
@@ -346,7 +346,7 @@ export const ChatInput = ({
               />
               <label
                 htmlFor="hosting-small"
-                className="inline-flex items-center justify-between px-1 py-3 text-gray-300 cursor-pointer  peer-checked:text-gray-800"
+                className="inline-flex items-center justify-between pl-2.5 w-20 cursor-pointer text-[#888888]  peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
               >
                 <IconHighlight size={30} />
                 <div className="w-full ml-1">{t('Text')}</div>
@@ -364,13 +364,14 @@ export const ChatInput = ({
               />
               <label
                 htmlFor="hosting-big"
-                className=" inline-flex items-center justify-between py-3 text-gray-300 cursor-pointer  peer-checked:text-gray-800"
+                className=" inline-flex items-center justify-between px-2 w-20   cursor-pointer text-[#888888] peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
               >
                 <IconPhotoEdit size={30} />
                 <div className="w-full ml-1">{t('Image')}</div>
               </label>
             </div>
           </div>
+
           <textarea
             ref={textareaRef}
             className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-5 text-black dark:bg-transparent  md:py-3 md:pl-5"
@@ -392,17 +393,6 @@ export const ChatInput = ({
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           />
-          {/* 
-          {showScrollDownButton && (
-            <div className="absolute bottom-12 right-0 lg:bottom-0 lg:-right-10">
-              <button
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-neutral-200"
-                onClick={onScrollDownClick}
-              >
-                <IconArrowDown size={18} />
-              </button>
-            </div>
-          )} */}
 
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
@@ -426,14 +416,14 @@ export const ChatInput = ({
           )}
         </div>
 
-        <div className="relative flex">
+        <div className="relative flex  items-center ">
           <button
-            className={` p-2.5 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
+            className={` p-2.5 h-11 w-11 text-white  hover:bg-neutral-200 hover:text-neutral-900  rounded-full ${
               messageIsStreaming ? 'bg-gray-500' : 'bg-[#FF4500]'
             }`}
             onClick={handleSend}
           >
-            <PaperAirplaneIcon className="h-6 w-6 text-white" />
+            <PaperAirplaneIcon className="pb-2 pr-1 h-8 w-8 text-white" />
           </button>
         </div>
       </div>

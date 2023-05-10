@@ -43,6 +43,8 @@ export const PromptRole = () => {
       const tmp = data.filter((item: Prompt) => item.status === 'A');
       if (tmp.length > 0) {
         setSelectedRole(tmp[0].content);
+        if (selectedConversation) selectedConversation.prompt = tmp[0].content;
+        console.log(1, selectedConversation?.prompt);
       }
     });
   }, []);
@@ -59,7 +61,7 @@ export const PromptRole = () => {
       <div
         className={`${
           showChatbar || showPromptbar ? 'z-0 sm:z-20' : 'z-20'
-        } relative sm:w-40 w-72 mt-4 sm:mt-0 `}
+        } relative w-72 mt-4 sm:mt-0 `}
       >
         {options.length > 0 && selectedRole ? (
           <Cselect

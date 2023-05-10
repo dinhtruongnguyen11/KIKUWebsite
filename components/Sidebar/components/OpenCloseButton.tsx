@@ -4,6 +4,7 @@ import {
   IconMessage,
   IconMessages,
   IconStarFilled,
+  IconX,
 } from '@tabler/icons-react';
 import { useContext } from 'react';
 
@@ -18,14 +19,14 @@ export const CloseSidebarButton = ({ onClick, side }: Props) => {
   return (
     <>
       <button
-        className={`fixed bg-[#2AAAE3] p-2 top-[80px] ${
+        className={`fixed bg-gray-500 p-2 top-[80px] ${
           side === 'right'
             ? 'right-[260px] rounded-l-lg'
             : 'left-[260px] rounded-r-lg'
         } z-50  text-white  `}
         onClick={onClick}
       >
-        {side === 'right' ? <IconStarFilled /> : <IconMessages />}
+        {side === 'right' ? <IconX /> : <IconX />}
       </button>
       <div
         onClick={onClick}

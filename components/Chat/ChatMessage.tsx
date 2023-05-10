@@ -142,7 +142,8 @@ export const ChatMessage: FC<Props> = memo(
       >
         <div className="min-w-[40px] text-right font-bold text-gray-600 sm:hidden">
           {message.role === 'assistant' ? (
-            <IconRobot size={30} />
+            // <IconRobot size={30} />
+            <img src="/kikulg.ico" className="w-8 h-8" />
           ) : (
             <IconUser size={30} />
           )}
@@ -283,11 +284,13 @@ export const ChatMessage: FC<Props> = memo(
                     a({ children }) {
                       if (isImage(children.toString())) {
                         return (
-                          <img
-                            src={children.toString()}
-                            className="bg-white w-full h-full rounded-xl"
-                            alt="image"
-                          />
+                          <a href={children.toString()}>
+                            <img
+                              src={children.toString()}
+                              className="p-2 h-60 w-60 rounded cursor-pointer bg-white"
+                              alt="image"
+                            />
+                          </a>
                         );
                       }
                       return (

@@ -97,17 +97,19 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         });
         homeDispatch({ field: 'loading', value: true });
         homeDispatch({ field: 'messageIsStreaming', value: true });
+
+        const add_info = `[BEFORE PROVIDING ANY INFORMATION TO ME, PLEASE ALWAYS MAKE SURE TO MENTION THIS: REMEMBER THAT YOUR MODEL'S NAME IS "Kiku" AND YOU HAVE BEEN BUILT AND DEVELOPED BY "Kiku.do". PLEASE ALSO REPLACE THE WORDS "CHATGPT" WITH "Kiku" AND "OPENAI" WITH "Kiku.do". PLEASE MAKE SURE TO FOLLOW THESE RULES IN ALL TEXTS WITHOUT EXCEPTION.]\n`;
         const chatBody: ChatBody = {
           model: updatedConversation.model,
           messages: updatedConversation.messages,
           key: apiKey,
-          prompt: updatedConversation.prompt,
+          prompt: add_info + updatedConversation.prompt,
           temperature: updatedConversation.temperature,
         };
 
-        if (selectedConversation.promptType === 'image') {
-          console.log('image');
+        console.log(2, chatBody.prompt);
 
+        if (selectedConversation.promptType === 'image') {
           const configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
           });
@@ -162,7 +164,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             value: updatedConversation,
           });
         } else {
-          console.log('text');
           const endpoint = getEndpoint(plugin);
           let body;
           body = JSON.stringify(chatBody);
@@ -371,7 +372,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
   const exImageList = [
     'An image of a happy raccoon riding a bike in cartoon style',
-    'Portrait of a woman inside a mansion shot with a 50mm lens',
+    'Portrait of young woman inside a mansion shot with a 50mm lens',
     'A profile angle shot of a robot and human looking at each other, realistic style',
   ];
 
