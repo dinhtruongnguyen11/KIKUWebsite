@@ -151,8 +151,8 @@ export const ChatMessage: FC<Props> = memo(
         <div
           className={`relative w-full rounded-xl m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 ${
             message.role === 'assistant'
-              ? ' text-white bg-[#2AAAE3]'
-              : ' text-gray-800 bg-white'
+              ? ' text-gray-800 bg-white shadow'
+              : ' text-white bg-[#2AAAE3] shadow'
           }`}
         >
           <div className="prose mt-[-2px] w-full ">
@@ -199,7 +199,7 @@ export const ChatMessage: FC<Props> = memo(
                   </div>
                 ) : (
                   <div
-                    className={`text-gray-800 prose whitespace-pre-wrap dark:prose-invert flex-1`}
+                    className={`text-white prose whitespace-pre-wrap dark:prose-invert flex-1`}
                   >
                     {message.content}
                   </div>
@@ -225,7 +225,7 @@ export const ChatMessage: FC<Props> = memo(
             ) : (
               <div className="flex flex-row">
                 <MemoizedReactMarkdown
-                  className="text-white prose  flex-1 justify-center"
+                  className="prose flex-1 justify-center"
                   remarkPlugins={[remarkGfm, remarkMath]}
                   rehypePlugins={[rehypeMathjax]}
                   components={{
@@ -255,7 +255,7 @@ export const ChatMessage: FC<Props> = memo(
                           {...props}
                         />
                       ) : (
-                        <code className={className} {...props}>
+                        <code className={`${className} `} {...props}>
                           {children}
                         </code>
                       );

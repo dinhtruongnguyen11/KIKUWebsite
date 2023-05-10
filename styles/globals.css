@@ -67,10 +67,10 @@ span.absolute {
   font-weight: bold;
 }
 
-.prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
+/* .prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
   font-weight: 400;
   color: white;
-}
+} */
 
 nav.min-w-\[240px\]{
   min-width: 0;

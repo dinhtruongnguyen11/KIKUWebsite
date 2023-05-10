@@ -13,7 +13,7 @@ export const ChatLoader: FC<Props> = () => {
         <IconRobot size={30} />
       </div>
       <div
-        className={`relative w-full rounded-xl m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 text-white bg-[#2AAAE3]`}
+        className={`relative w-full rounded-xl m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 text-gray-800 bg-white shadow`}
       >
         <span className="animate-pulse cursor-default mt-1">▍</span>
       </div>

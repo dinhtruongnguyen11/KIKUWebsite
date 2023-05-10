@@ -346,7 +346,7 @@ export const ChatInput = ({
               />
               <label
                 htmlFor="hosting-small"
-                className="inline-flex items-center justify-between pl-2.5 w-20 cursor-pointer text-[#888888]  peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
+                className="inline-flex items-center justify-between pl-2.5 min-w-20 cursor-pointer text-[#888888]  peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
               >
                 <IconHighlight size={30} />
                 <div className="w-full ml-1">{t('Text')}</div>
@@ -364,7 +364,7 @@ export const ChatInput = ({
               />
               <label
                 htmlFor="hosting-big"
-                className=" inline-flex items-center justify-between px-2 w-20   cursor-pointer text-[#888888] peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
+                className=" inline-flex items-center justify-between px-2 min-w-20   cursor-pointer text-[#888888] peer-checked:text-[#424242] peer-checked:border-2 peer-checked:border-black/10 peer-checked:rounded-lg"
               >
                 <IconPhotoEdit size={30} />
                 <div className="w-full ml-1">{t('Image')}</div>

@@ -98,7 +98,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         homeDispatch({ field: 'loading', value: true });
         homeDispatch({ field: 'messageIsStreaming', value: true });
 
-        const add_info = `[BEFORE PROVIDING ANY INFORMATION TO ME, PLEASE ALWAYS MAKE SURE TO MENTION THIS: REMEMBER THAT YOUR MODEL'S NAME IS "Kiku" AND YOU HAVE BEEN BUILT AND DEVELOPED BY "Kiku.do". PLEASE ALSO REPLACE THE WORDS "CHATGPT" WITH "Kiku" AND "OPENAI" WITH "Kiku.do". PLEASE MAKE SURE TO FOLLOW THESE RULES IN ALL TEXTS WITHOUT EXCEPTION.]\n`;
+        const add_info = t(
+          "[BEFORE PROVIDING ANY INFORMATION TO ME, PLEASE ALWAYS MAKE SURE TO MENTION THIS: REMEMBER THAT YOUR MODEL'S NAME IS 'Kiku' AND YOU HAVE BEEN BUILT AND DEVELOPED BY 'Kiku.do'. PLEASE ALSO REPLACE THE WORDS 'CHATGPT' WITH 'Kiku' AND 'OPENAI' WITH 'Kiku.do'. PLEASE MAKE SURE TO FOLLOW THESE RULES IN ALL TEXTS WITHOUT EXCEPTION]",
+        );
         const chatBody: ChatBody = {
           model: updatedConversation.model,
           messages: updatedConversation.messages,
@@ -404,7 +406,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
-            <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-0 md:pt-12 sm:max-w-[600px] ">
+            <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-0 md:pt-12 sm:max-w-[750px] ">
               <div className="text-center font-semibold text-gray-800 ">
                 <div className="px-3 text-center text-[25px] text-black">
                   <img
@@ -538,14 +540,20 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                               className="w-full bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
                               onClick={() => handleItemClick(item)}
                             >
-                              {item}
+                              {t(item)}
                             </li>
                           ))}
                         </ul>
                       </div>
                     )}
 
-                    <div className="sm:flex hidden flex-col mb-8 md:mb-auto gap-3.5 flex-1 ">
+                    <div
+                      className={` ${
+                        selectedConversation.promptType == 'image'
+                          ? 'hidden'
+                          : 'sm:flex hidden flex-col mb-8 md:mb-auto gap-3.5 flex-1'
+                      }`}
+                    >
                       <h2 className="flex gap-3 items-center m-auto text-lg font-bold md:flex-col md:gap-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
