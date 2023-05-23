@@ -11,7 +11,8 @@ import { IconStarFilled } from '@tabler/icons-react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
@@ -46,6 +47,7 @@ import { Chatbar } from '@/components/Chatbar/Chatbar';
 import Promptbar from '@/components/Promptbar';
 import LanguageSwitch from '@/components/Settings/LanguageSwitch';
 
+import { authOptions } from '../auth/[...nextauth]';
 import HomeContext from './home.context';
 import { HomeInitialState, initialState } from './home.state';
 
@@ -446,7 +448,21 @@ const Home = ({
 };
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  console.log('session', session);
+  if (session == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/authenticate/login',
+      },
+      props: {},
+    };
+  }
+
   const defaultModelId =
     (process.env.DEFAULT_MODEL &&
       Object.values(OpenAIModelID).includes(
