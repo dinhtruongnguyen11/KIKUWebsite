@@ -8,7 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { useContext } from 'react';
 
-import HomeContext from '@/pages/home/home.context';
+import HomeContext from '@/pages/api/home/home.context';
 
 interface Props {
   onClick: any;
