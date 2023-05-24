@@ -16,7 +16,7 @@ import { getSettings, saveSettings } from '@/utils/app/settings';
 
 import { Settings } from '@/types/settings';
 
-import HomeContext from '@/pages/home/home.context';
+import HomeContext from '@/pages/api/home/home.context';
 
 import UserTagSidebar from '../User/UserTag';
 
