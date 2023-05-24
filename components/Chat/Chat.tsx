@@ -24,7 +24,7 @@ import { ChatBody, Conversation, Message } from '@/types/chat';
 import { ErrorMessage } from '@/types/error';
 import { Plugin } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/pages/home/home.context';
 
 import { ChatInput } from './ChatInput';
 import { ChatLoader } from './ChatLoader';

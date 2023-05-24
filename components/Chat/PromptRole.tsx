@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Prompt } from '@/types/prompt';
 
 import fetchGoogleSheetData from '@/pages/api/fetchGoogleSheetData';
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/pages/home/home.context';
 
 export const PromptRole = () => {
   const { t } = useTranslation('chat');

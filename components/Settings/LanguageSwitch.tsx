@@ -16,7 +16,9 @@ import { getSettings, saveSettings } from '@/utils/app/settings';
 
 import { Settings } from '@/types/settings';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/pages/home/home.context';
+
+import UserTagSidebar from '../User/UserTag';
 
 export default function LanguageSwitch() {
   const { t, i18n } = useTranslation('settings');
@@ -48,12 +50,8 @@ export default function LanguageSwitch() {
   });
 
   return (
-    <div
-      className={`${showChatbar ? '' : 'lg:block hidden'} ${
-        showPromptbar ? 'lg:hidden' : ''
-      } absolute flex top-4 left-5 lg:left-[91vw]  z-40`}
-    >
-      <Card className="w-full max-w-[24rem] ">
+    <div>
+      <Card className="w-24 ">
         <List className="flex-row  py-2 px-1.5">
           <ListItem className="p-0">
             <label
