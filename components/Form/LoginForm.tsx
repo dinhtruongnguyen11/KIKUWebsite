@@ -91,7 +91,9 @@ export const LoginForm = () => {
       </div>
 
       {error && (
-        <p className="text-center bg-red-300 py-4 mb-6 rounded">{error}</p>
+        <p className="text-center font-semibold text-sm text-red-300 mb-5 rounded">
+          {error}
+        </p>
       )}
       <div className="mb-6">
         <input
