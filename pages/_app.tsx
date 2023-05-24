@@ -1,4 +1,3 @@
-import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -17,9 +16,7 @@ function App({ Component, pageProps }: AppProps<{}>) {
     <div className={inter.className}>
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <SessionProvider>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <Component {...pageProps} />
       </QueryClientProvider>
     </div>
   );

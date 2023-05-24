@@ -8,8 +8,6 @@ import {
 } from './components/OpenCloseButton';
 
 import Search from '../Search';
-import LanguageSwitch from '../Settings/LanguageSwitch';
-import UserTagSidebar from '../User/UserTag';
 
 interface Props<T> {
   isOpen: boolean;
@@ -59,18 +57,8 @@ const Sidebar = <T,>({
   return isOpen ? (
     <div>
       <div
-        className={`z-20 fixed top-0 pt-4 ${side}-0 
-        flex h-full w-[260px] flex-none flex-col 
-        space-y-2 bg-gradient-to-b from-[#2C75BA] to-[#22569F] 
-        px-5 text-[12px] transition-all sm:relative sm:top-0`}
+        className={`z-20 fixed top-0 ${side}-0 flex h-full w-[260px] flex-none flex-col space-y-2 bg-gradient-to-b from-[#2C75BA] to-[#22569F] px-5 py-20 text-[12px] transition-all sm:relative sm:top-0`}
       >
-        {side == 'left' && (
-          <>
-            <LanguageSwitch />
-            <UserTagSidebar />
-          </>
-        )}
-
         <div className="flex items-center">
           <button
             className={`font-bold ${
