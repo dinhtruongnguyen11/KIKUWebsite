@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 import HomeContext from '@/pages/api/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
+import UpdatePlusButton from '@/components/Sidebar/UpdatePlusButton';
 
 import { Import } from '../../Settings/Import';
 import { Key } from '../../Settings/Key';
@@ -37,7 +38,8 @@ export const ChatbarSettings = () => {
   } = useContext(ChatbarContext);
 
   return (
-    <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
+    <div className="flex py-5 flex-col border-t border-white/20 text-sm">
+      <UpdatePlusButton />
       {conversations.length > 0 ? (
         <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
@@ -55,7 +57,6 @@ export const ChatbarSettings = () => {
         icon={<IconSettings size={18} />}
         onClick={() => setIsSettingDialog(true)}
       />
-
 
       <SettingDialog
         open={isSettingDialogOpen}
