@@ -1,10 +1,3 @@
-import {
-  ArrowLongRightIcon,
-  ArrowPathIcon,
-  BookmarkIcon,
-  CloudArrowUpIcon,
-  StarIcon,
-} from '@heroicons/react/24/outline';
 import { ThemeProvider } from '@material-tailwind/react';
 import { Button } from '@material-tailwind/react';
 import { IconStarFilled } from '@tabler/icons-react';
@@ -12,6 +5,8 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { GetServerSideProps } from 'next';
+import type { GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth/next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
@@ -43,9 +38,11 @@ import { Prompt } from '@/types/prompt';
 
 import { Chat } from '@/components/Chat/Chat';
 import { Chatbar } from '@/components/Chatbar/Chatbar';
+import { Navbar } from '@/components/Mobile/Navbar';
 import Promptbar from '@/components/Promptbar';
 import LanguageSwitch from '@/components/Settings/LanguageSwitch';
 
+import { authOptions } from '../auth/[...nextauth]';
 import HomeContext from './home.context';
 import { HomeInitialState, initialState } from './home.state';
 
@@ -414,15 +411,11 @@ const Home = ({
           >
             <div className="flex h-full w-full pt-5 sm:pt-0">
               <Chatbar />
-
               <div className="flex flex-1">
                 <Chat stopConversationRef={stopConversationRef} />
               </div>
 
-              <LanguageSwitch />
-
               <Promptbar />
-
               <div
                 className={`fixed right-8 top-20 z-50 hidden  ${
                   contextValue.state.showPromptbar ? 'hidden' : 'lg:block'
@@ -446,7 +439,21 @@ const Home = ({
 };
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  console.log('session', session);
+  if (session == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/authenticate/login',
+      },
+      props: {},
+    };
+  }
+
   const defaultModelId =
     (process.env.DEFAULT_MODEL &&
       Object.values(OpenAIModelID).includes(
