@@ -1,11 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { prisma } from '@/lib/prisma';
-import { hash } from 'bcryptjs';
-import { nanoid } from 'nanoid';
+import nodemailer from 'nodemailer';
 
-const sendMail = async (user: any, code: any) => {
-  let template = `
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
+  try {
+    let template = `
         <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,10 +40,12 @@ const sendMail = async (user: any, code: any) => {
                                 style="padding: 12px 24px; border-radius: 4px; color: #FFF; background: #2B52F5;display: inline-block;margin: 0.5rem 0;">Confirm
                                 now</a></p>
                             <p style="padding-bottom: 16px">If you didn’t ask to verify this address, you can ignore this email.</p>
-                            <p style="padding-bottom: 16px">Thanks,<br>The KIKU team</p>
+                            <p style="padding-bottom: 16px">Thanks,<br>The Mailmeteor team</p>
                         </div>
                         </div>
-                 
+                        <div style="padding-top: 20px; color: rgb(153, 153, 153); text-align: center;">
+                        <p style="padding-bottom: 16px">Made with ♥ in Paris</p>
+                        </div>
                     </td>
                     </tr>
                 </tbody>
@@ -50,76 +58,32 @@ const sendMail = async (user: any, code: any) => {
     
     </html>
         `;
+    const { to } = req.body;
 
-  const subject = `Thanks for signing up, ${user.name}!`;
-  const body = {
-    to: user.email,
-    content: template,
-    subject,
-  };
+    const subject = 'Thanks for signing up, Jane!';
 
-  const res = await fetch('http://localhost:3000/api/sendMail', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-};
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST,
+      port: Number(process.env.MAIL_PORT),
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
-  if (req.method === 'POST') {
-    try {
-      await prisma.user.deleteMany({});
+    const mailOptions = {
+      from: 'info@kiku.do',
+      to,
+      subject,
+      html: template,
+    };
 
-      const { name, email, password } = (await req.body) as {
-        name: string;
-        email: string;
-        password: string;
-      };
-      const hashed_password = await hash(password, 12);
+    const info = await transporter.sendMail(mailOptions);
 
-      const existUser = await prisma.user.findUnique({
-        where: {
-          email: email.toLowerCase(),
-        },
-      });
-
-      if (existUser) {
-        res.status(500).json({
-          message: 'Your email already exists.',
-        });
-      }
-
-      const user = await prisma.user.create({
-        data: {
-          name,
-          email: email.toLowerCase(),
-          password: hashed_password,
-        },
-      });
-
-      const newCode = await prisma.verificationCode.create({
-        data: {
-          code: Math.floor(100000 + Math.random() * 900000).toString(),
-          userId: user.id,
-        },
-      });
-
-      const rs = sendMail(user, newCode);
-
-      res.status(200).json({
-        user: {
-          name: user.name,
-          email: user.email,
-        },
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        message: error.message,
-      });
-    }
+    res.status(200).json({ message: 'Email sent successfully', info });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'An error occurred while sending the email', error });
   }
-};
-
-export default handler;
+}

@@ -15,4 +15,25 @@ model User {
   name     String
   email    String @unique
   password String
+  verified Boolean @default(false)   
+  role    Role     @default(USER) 
+  plan    Plan  @default(FREE) 
+}
+
+model VerificationCode {
+  id       String @id @default(uuid())
+  code            String   
+  userId          String
+  createdAt       DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
+enum Plan {
+  FREE
+  PAID
 }
