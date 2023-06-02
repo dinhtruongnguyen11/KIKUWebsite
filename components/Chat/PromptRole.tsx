@@ -44,7 +44,6 @@ export const PromptRole = () => {
       if (tmp.length > 0) {
         setSelectedRole(tmp[0].content);
         if (selectedConversation) selectedConversation.prompt = tmp[0].content;
-        console.log(1, selectedConversation?.prompt);
       }
     });
   }, []);

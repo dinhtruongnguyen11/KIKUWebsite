@@ -46,6 +46,7 @@ import { authOptions } from '../auth/[...nextauth]';
 import HomeContext from './home.context';
 import { HomeInitialState, initialState } from './home.state';
 
+import { prisma } from '@/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
@@ -403,7 +404,7 @@ const Home = ({
           />
           <meta name="theme-color" content="#EBF2FC"></meta>
 
-          <link rel="icon" href="/kikulg.ico" />
+          <link rel="icon" href="/kikulg2.ico" />
         </Head>
         {selectedConversation && (
           <main
@@ -443,7 +444,6 @@ export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext,
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
-  console.log('session', session);
   if (session == null) {
     return {
       redirect: {
@@ -452,6 +452,22 @@ export const getServerSideProps: GetServerSideProps = async (
       },
       props: {},
     };
+  } else if (session.user) {
+    const existUser = await prisma.user.findFirst({
+      where: {
+        email: session.user.email?.toLowerCase(),
+      },
+    });
+
+    if (!existUser?.verified) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/authenticate/verification',
+        },
+        props: {},
+      };
+    }
   }
 
   const defaultModelId =

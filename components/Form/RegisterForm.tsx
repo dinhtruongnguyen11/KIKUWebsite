@@ -8,9 +8,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
-    name: 'Dinh',
-    email: 'dinhtruongnguyen11@gmail.com',
-    password: 'dinh123',
+    name: '',
+    email: '',
+    password: '',
   });
   const [error, setError] = useState('');
   const router = useRouter();
@@ -20,7 +20,7 @@ export const RegisterForm = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // setFormValues({ name: '', email: '', password: '' });
+    setFormValues({ name: '', email: '', password: '' });
 
     // Validate
     if (formValues.name.trim() === '') {

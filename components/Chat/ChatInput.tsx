@@ -331,7 +331,12 @@ export const ChatInput = ({
           </button>
         </div>
 
-        <div className="relative mx-2 flex w-[70vw]  flex-col rounded-xl border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)]  text-gray-800">
+        <div
+          className="relative mx-2 flex w-[70vw]  
+        flex-col rounded-xl border border-black/10 
+        bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] 
+         text-gray-800 justify-center"
+        >
           <div className="absolute flex -top-9">
             <div>
               <input
@@ -373,7 +378,9 @@ export const ChatInput = ({
 
           <textarea
             ref={textareaRef}
-            className="focus:outline-none m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-5 text-black dark:bg-transparent  md:py-3 md:pl-5"
+            className="focus:outline-none m-0 w-full h-full resize-none 
+            border-0 bg-transparent  py-2 pr-8 pl-5 text-black 
+            dark:bg-transparent md:py-3 md:pl-5"
             style={{
               resize: 'none',
               bottom: `${textareaRef?.current?.scrollHeight}px`,

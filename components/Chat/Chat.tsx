@@ -109,8 +109,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           temperature: updatedConversation.temperature,
         };
 
-        console.log(2, chatBody.prompt);
-
         if (selectedConversation.promptType === 'image') {
           const configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,

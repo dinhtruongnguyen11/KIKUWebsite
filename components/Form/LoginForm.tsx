@@ -32,7 +32,6 @@ export const LoginForm = () => {
 
       setLoading(false);
 
-      console.log(res);
       if (!res?.error) {
         router.push(callbackUrl);
       } else {
@@ -106,7 +105,7 @@ export const LoginForm = () => {
           className={`${input_style}`}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-2">
         <input
           required
           type="password"
@@ -116,6 +115,16 @@ export const LoginForm = () => {
           placeholder="Password"
           className={`${input_style}`}
         />
+      </div>
+      <div className="mb-5 flex justify-end">
+        <span className="text-xs">
+          <Link
+            href="/authenticate/resetPassword"
+            className="text-blue-600 font-semibold"
+          >
+            Forgot password
+          </Link>
+        </span>
       </div>
       <button
         type="submit"

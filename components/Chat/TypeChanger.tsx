@@ -13,7 +13,6 @@ export default function TypeChanger() {
 
   const handleRadioChange = (event: any) => {
     setSelectedValue(event.target.value);
-    console.log(event.target.value);
   };
 
   return (
