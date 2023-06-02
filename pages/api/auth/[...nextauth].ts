@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
 import { prisma } from '@/lib/prisma';
+import { hash } from 'bcryptjs';
 import { compare } from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
@@ -75,16 +76,15 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!existUser) {
-          var body = {
-            name: u.name,
-            email: u.email,
-            password: 'pwd2023',
-          };
-          var res = await fetch(`${process.env.BASE_URL}/api/register`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-              'Content-Type': 'application/json',
+          var password =
+            '2023' + Math.floor(100000 + Math.random() * 900000).toString();
+          const hashed_password = await hash(password, 12);
+          await prisma.user.create({
+            data: {
+              name: u.name,
+              email: u.email.toLowerCase(),
+              password: hashed_password,
+              verified: true,
             },
           });
         }
