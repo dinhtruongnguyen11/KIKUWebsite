@@ -89,6 +89,7 @@ export const authOptions: NextAuthOptions = {
               'Content-Type': 'application/json',
             },
           });
+          console.log(`${process.env.BASE_URL}/api/register`);
           res.json().then((value) => {
             console.log(112, value.message);
           });

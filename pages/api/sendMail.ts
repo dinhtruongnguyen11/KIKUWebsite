@@ -22,6 +22,18 @@ export default async function handler(
       },
     });
 
+    await new Promise((resolve, reject) => {
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.log(error);
+          reject(error);
+        } else {
+          console.log('Server is ready to take our messages');
+          resolve(success);
+        }
+      });
+    });
+
     const mailOptions = {
       from: 'KIKU Team <info@kiku.do>',
       to,
@@ -29,11 +41,22 @@ export default async function handler(
       html: content,
     };
 
+    await new Promise((resolve, reject) => {
+      // send mail
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(info);
+          resolve(info);
+        }
+      });
+    });
+
     console.log(mailOptions);
 
-    const info = await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: 'Email sent successfully', info });
+    res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     res
       .status(500)
