@@ -445,7 +445,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
   if (session == null) {
-    console.log(1, 'Session null');
+    // console.log(1, 'Session null');
     return {
       redirect: {
         permanent: false,
@@ -454,7 +454,7 @@ export const getServerSideProps: GetServerSideProps = async (
       props: {},
     };
   } else if (session.user) {
-    console.log(2, 'Session exist', session);
+    // console.log(2, 'Session exist', session);
 
     const existUser = await prisma.user.findFirst({
       where: {
@@ -463,7 +463,7 @@ export const getServerSideProps: GetServerSideProps = async (
     });
 
     if (!existUser?.verified) {
-      console.log(3, 'Unverified', session);
+      // console.log(3, 'Unverified', session);
       return {
         redirect: {
           permanent: false,
