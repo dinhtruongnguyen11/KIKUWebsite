@@ -64,9 +64,35 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    jwt: ({ token, user }) => {
+    jwt: async ({ token, user }) => {
       if (user) {
         const u = user as unknown as any;
+
+        const existUser = await prisma.user.findUnique({
+          where: {
+            email: u.email,
+          },
+        });
+
+        console.log(111, existUser);
+
+        if (!existUser) {
+          var body = {
+            name: u.name,
+            email: u.email,
+            password: 'pwd2023',
+          };
+          var res = await fetch(`${process.env.BASE_URL}/api/register`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          res.json().then((value) => {
+            console.log(112, value.message);
+          });
+        }
         return {
           ...token,
           id: u.id,

@@ -22,6 +22,45 @@ export const RegisterForm = () => {
     setLoading(true);
     setFormValues({ name: '', email: '', password: '' });
 
+    // Validate
+    if (formValues.name.trim() === '') {
+      setError('Please enter your name.');
+      setLoading(false);
+      return;
+    }
+
+    if (formValues.name.length < 3) {
+      setError('Name must be at least 3 characters long.');
+      setLoading(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (formValues.email.trim() === '') {
+      setError('Please enter your email address.');
+      setLoading(false);
+      return;
+    }
+
+    if (!emailRegex.test(formValues.email)) {
+      setError('Invalid email address.');
+      setLoading(false);
+      return;
+    }
+
+    if (formValues.password === '') {
+      setError('Please enter a password.');
+      setLoading(false);
+      return;
+    }
+
+    if (formValues.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
@@ -98,7 +137,9 @@ export const RegisterForm = () => {
         Or
       </div>
       {error && (
-        <p className="text-center bg-red-300 py-4 mb-6 rounded">{error}</p>
+        <p className="text-center font-semibold text-sm text-red-300 mb-5 rounded">
+          {error}
+        </p>
       )}
       <div className="mb-6">
         <input

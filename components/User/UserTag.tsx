@@ -4,7 +4,6 @@ import React from 'react';
 
 const UserTagSidebar = () => {
   const { data: session } = useSession();
-  console.log(session);
   return (
     <>
       {session && session.user && (

@@ -59,17 +59,11 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
 
     const newLocale = state.language;
     i18n.changeLanguage(newLocale);
-
-    console.log(state.language);
   };
 
   // Render nothing if the dialog is not open.
   if (!open) {
     return <></>;
-  }
-
-  {
-    console.log(state.language);
   }
 
   // Render the dialog.
