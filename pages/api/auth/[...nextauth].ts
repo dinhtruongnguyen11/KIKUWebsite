@@ -74,8 +74,6 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        console.log(111, existUser);
-
         if (!existUser) {
           var body = {
             name: u.name,
@@ -88,10 +86,6 @@ export const authOptions: NextAuthOptions = {
             headers: {
               'Content-Type': 'application/json',
             },
-          });
-          console.log(`${process.env.BASE_URL}/api/register`);
-          res.json().then((value) => {
-            console.log(112, value.message);
           });
         }
         return {

@@ -61,6 +61,8 @@ export const RegisterForm = () => {
       return;
     }
 
+    console.log(JSON.stringify(formValues));
+
     try {
       const res = await fetch('/api/register', {
         method: 'POST',

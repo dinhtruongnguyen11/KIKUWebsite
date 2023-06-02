@@ -1,8 +1,18 @@
+import { signOut, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+
 import Head from 'next/head';
 
 import { LoginForm } from '@/components/Form/LoginForm';
 
 export default function LoginPage() {
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      signOut();
+    }
+  }, []);
   return (
     <>
       <Head>

@@ -54,7 +54,7 @@ export default async function handler(
       });
     });
 
-    console.log(mailOptions);
+    // console.log(mailOptions);
 
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {

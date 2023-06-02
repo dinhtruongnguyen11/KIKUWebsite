@@ -1,10 +1,11 @@
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const { data: session } = useSession();
   const input_style = `form-control block w-full px-1 py-2 
     text-2xl font-normal text-gray-700 text-center
     bg-white bg-clip-padding border border-solid 
@@ -13,7 +14,6 @@ export default function LoginPage() {
     focus:bg-white focus:border-blue-600 
     focus:outline-none`;
 
-  const { data: session } = useSession();
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
 

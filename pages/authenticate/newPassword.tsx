@@ -1,11 +1,15 @@
 import { IconArrowBack, IconChevronLeft } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 export default function NewPassword() {
+  const { data: session } = useSession();
+  if (session) {
+    signOut();
+  }
   const { push } = useRouter();
 
   const [password, setPassword] = useState('');

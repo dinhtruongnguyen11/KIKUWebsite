@@ -29,6 +29,8 @@ const sendMail = async (
     subject,
   };
 
+  console.log(JSON.stringify(body));
+
   const res = await fetch(`${baseUrl}/api/sendMail`, {
     method: 'POST',
     body: JSON.stringify(body),
@@ -41,6 +43,7 @@ const sendMail = async (
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   if (req.method === 'POST') {
     try {
+      console.log('START REGISTER');
       let baseUrl = process.env.BASE_URL ? process.env.BASE_URL : '';
 
       // await prisma.user.deleteMany({});

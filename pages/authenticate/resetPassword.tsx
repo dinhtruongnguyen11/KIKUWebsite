@@ -1,11 +1,15 @@
 import { IconArrowBack, IconChevronLeft } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 
 import Head from 'next/head';
 import Link from 'next/link';
 
 export default function ResetPassword() {
+  const { data: session } = useSession();
+  if (session) {
+    signOut();
+  }
   const input_style =
     'form-control text-center block w-full px-4 py-3 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
 
