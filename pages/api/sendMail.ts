@@ -73,9 +73,20 @@ export default async function handler(
       html: content,
     };
 
-    await sgMail.send(msg);
-
-    res.status(200).json({ message: 'Email sent successfully' });
+    // await sgMail.send(msg);
+    sgMail
+      .send(msg)
+      .then(() => {
+        res.status(200).json({ message: 'Email sent successfully' });
+      })
+      .catch((error) => {
+        res
+          .status(500)
+          .json({
+            message: 'An error occurred while sending the email',
+            error,
+          });
+      });
   } catch (error) {
     res
       .status(500)
