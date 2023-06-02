@@ -110,7 +110,7 @@ export default function ResetPassword() {
 
           <Link
             className="text-center text-gray-700 
-          w-full text-xs font-thin  flex justify-center items-center
+          w-full text-sm font-li  flex justify-center items-center
           gap-1 hover:underline"
             href="/authenticate/login"
           >
