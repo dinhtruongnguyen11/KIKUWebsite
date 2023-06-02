@@ -410,9 +410,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   <img
                     src="/kikulg.ico"
                     alt="Kiku icon"
-                    className="inline-block align-middle mr-2 w-10 h-10"
+                    className="inline-block align-middle mr-2 w-14 h-14"
                   />
-                  Kiku
                 </div>
                 <div className="sm:px-3 px-20 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2 ">
                   {t('Empowering your growth through continous AI learning')}

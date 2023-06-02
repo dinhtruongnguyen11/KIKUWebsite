@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
+import sgMail from '@sendgrid/mail';
 import nodemailer from 'nodemailer';
 
 export default async function handler(
@@ -13,48 +14,66 @@ export default async function handler(
   try {
     const { to, subject, content } = req.body;
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: Number(process.env.MAIL_PORT),
-      auth: {
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD,
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   host: process.env.MAIL_HOST,
+    //   port: Number(process.env.MAIL_PORT),
+    //   auth: {
+    //     user: process.env.MAIL_USERNAME,
+    //     pass: process.env.MAIL_PASSWORD,
+    //   },
+    // });
 
-    await new Promise((resolve, reject) => {
-      transporter.verify(function (error, success) {
-        if (error) {
-          console.log(error);
-          reject(error);
-        } else {
-          console.log('Server is ready to take our messages');
-          resolve(success);
-        }
-      });
-    });
+    // await new Promise((resolve, reject) => {
+    //   transporter.verify(function (error, success) {
+    //     if (error) {
+    //       console.log(error);
+    //       reject(error);
+    //     } else {
+    //       console.log('Server is ready to take our messages');
+    //       resolve(success);
+    //     }
+    //   });
+    // });
 
-    const mailOptions = {
-      from: 'KIKU Team <info@kiku.do>',
+    // const mailOptions = {
+    //   from: 'KIKU Team <info@kiku.do>',
+    //   to,
+    //   subject,
+    //   html: content,
+    // };
+
+    // await new Promise((resolve, reject) => {
+    //   // send mail
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //       reject(err);
+    //     } else {
+    //       console.log(info);
+    //       resolve(info);
+    //     }
+    //   });
+    // });
+
+    // console.log(mailOptions);
+
+    sgMail.setApiKey(process.env.SEND_GRID_KEY as string);
+
+    // const options = {
+    //   From: 'info@kiku.do',
+    //   To: 'info@kiku.do',
+    //   Subject: subject,
+    //   HtmlBody: content,
+    // };
+
+    const msg = {
       to,
+      from: 'KIKU Team <info@kiku.do>',
       subject,
       html: content,
     };
 
-    await new Promise((resolve, reject) => {
-      // send mail
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          console.log(info);
-          resolve(info);
-        }
-      });
-    });
-
-    // console.log(mailOptions);
+    await sgMail.send(msg);
 
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {

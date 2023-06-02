@@ -142,7 +142,6 @@ export const ChatMessage: FC<Props> = memo(
       >
         <div className="min-w-[40px] text-right font-bold text-gray-600 sm:hidden">
           {message.role === 'assistant' ? (
-            // <IconRobot size={30} />
             <img src="/kikulg2.ico" className="w-8 h-8" />
           ) : (
             <IconUser size={30} />

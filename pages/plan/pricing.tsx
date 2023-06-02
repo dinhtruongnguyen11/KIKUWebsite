@@ -16,7 +16,7 @@ const pricing = () => {
       "
       >
         <div className="flex justify-center items-center gap-2 mb-5">
-          <Image src="/kikulg.ico" alt="" width={50} height={50} />
+          <Image src="/kikulg2.ico" alt="" width={50} height={50} />
           <span className="text-3xl font-semibold">Kiku</span>
         </div>
         <span className="text-3xl">
