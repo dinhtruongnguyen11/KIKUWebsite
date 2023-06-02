@@ -80,7 +80,7 @@ export const authOptions: NextAuthOptions = {
             email: u.email,
             password: 'pwd2023',
           };
-          var res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+          var res = await fetch(`${process.env.BASE_URL}/api/register`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {

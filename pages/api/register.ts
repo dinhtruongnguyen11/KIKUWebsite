@@ -41,7 +41,7 @@ const sendMail = async (
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   if (req.method === 'POST') {
     try {
-      let baseUrl = process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : '';
+      let baseUrl = process.env.BASE_URL ? process.env.BASE_URL : '';
 
       // await prisma.user.deleteMany({});
       // await prisma.verificationCode.deleteMany({});
