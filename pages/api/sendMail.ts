@@ -57,9 +57,7 @@ export default async function handler(
 
     // console.log(mailOptions);
 
-    sgMail.setApiKey(
-      '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',
-    );
+    sgMail.setApiKey(process.env.SEND_GRID_KEY as string);
 
     // const options = {
     //   From: 'info@kiku.do',
