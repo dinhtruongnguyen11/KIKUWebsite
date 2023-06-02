@@ -15,6 +15,7 @@ export default function LoginPage() {
 
   const { data: session } = useSession();
   const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
 
   var error = '';
 
@@ -74,6 +75,7 @@ export default function LoginPage() {
   };
 
   const submit = async () => {
+    setLoading(true);
     var code = data.join('');
     var email = session?.user?.email;
 
@@ -99,6 +101,7 @@ export default function LoginPage() {
       res.json().then((value) => {
         alert(value.message);
       });
+      setLoading(false);
     } else {
       push('/');
     }
@@ -134,7 +137,7 @@ export default function LoginPage() {
 
           <span
             className="text-center text-gray-700 w-full 
-          text-xs font-thin mb-5"
+          text-sm font-light mb-5"
           >
             Enter the code sent to your email to complete the login process.
           </span>
@@ -165,8 +168,9 @@ export default function LoginPage() {
         shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
         focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
         ease-in-out w-full"
+            disabled={loading}
           >
-            Submit
+            {loading ? '...' : 'Submit'}
           </button>
         </div>
       </main>

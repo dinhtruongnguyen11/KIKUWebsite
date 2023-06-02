@@ -48,7 +48,7 @@ export const initialState: HomeInitialState = {
   roleList: [],
   temperature: 1,
   showPromptbar: false,
-  showChatbar: true,
+  showChatbar: false,
   currentFolder: undefined,
   messageError: false,
   searchTerm: '',

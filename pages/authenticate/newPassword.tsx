@@ -81,7 +81,7 @@ export default function NewPassword() {
 
           <span
             className="text-center text-gray-700 w-full 
-          text-xs font-thin mb-5"
+            text-sm font mb-5"
           >
             Please enter a new password below.
           </span>

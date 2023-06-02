@@ -74,6 +74,8 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        console.log(111, existUser);
+
         if (!existUser) {
           var body = {
             name: u.name,
@@ -88,7 +90,7 @@ export const authOptions: NextAuthOptions = {
             },
           });
           res.json().then((value) => {
-            console.log(value.message);
+            console.log(112, value.message);
           });
         }
         return {

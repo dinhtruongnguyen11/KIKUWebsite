@@ -29,6 +29,8 @@ export default async function handler(
       html: content,
     };
 
+    console.log(mailOptions);
+
     const info = await transporter.sendMail(mailOptions);
 
     res.status(200).json({ message: 'Email sent successfully', info });
