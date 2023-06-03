@@ -20,20 +20,30 @@ export const RegisterForm = () => {
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (emailInputRef.current) {
       emailInputRef.current.focus();
     }
   }, []);
 
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        event.preventDefault();
+        buttonRef.current?.click();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  }, []);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    // setLoading(false);
-    // return;
-
-    // setFormValues({ name: '', email: '', password: '' });
 
     // Validate
     if (formValues.name.trim() === '') {
@@ -201,6 +211,7 @@ export const RegisterForm = () => {
         focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
         ease-in-out w-full"
         disabled={loading}
+        ref={buttonRef}
       >
         {loading ? (
           <LoadingIcons.Oval height={25} strokeWidth={5} />

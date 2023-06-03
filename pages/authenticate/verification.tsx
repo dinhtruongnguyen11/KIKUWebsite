@@ -19,8 +19,6 @@ export default function LoginPage() {
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
 
-  var error = '';
-
   const [data, setData] = useState<string[]>(['', '', '', '', '', '']);
   const inputRefs = useRef<Array<HTMLInputElement>>([]);
 
@@ -28,6 +26,10 @@ export default function LoginPage() {
     const newData = [...data];
     newData[index] = value;
     setData(newData);
+
+    if (value.length === 1 && index < data.length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
   };
 
   useEffect(() => {
@@ -46,6 +48,19 @@ export default function LoginPage() {
       }
     });
   }, [data]);
+
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        event.preventDefault();
+        submit();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  }, []);
 
   const updateValue = (value: string) => {
     const arr = value.split('').slice(0, 6);
@@ -75,9 +90,6 @@ export default function LoginPage() {
 
   const submit = async () => {
     setLoading(true);
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    // setLoading(false);
-    // return;
 
     var code = data.join('');
     var email = session?.user?.email;

@@ -29,22 +29,32 @@ export default function ResetPassword() {
     }
   }, []);
 
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        event.preventDefault();
+        submit();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  }, []);
+
   const submit = async () => {
     setLoading(true);
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    // setLoading(false);
-    // return;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (email.trim() === '') {
-      alert('Please enter your email address.');
+      setError('Please enter your email address.');
       setLoading(false);
       return;
     }
 
     if (!emailRegex.test(email)) {
-      alert('Invalid email address.');
+      setError('Invalid email address.');
       setLoading(false);
       return;
     }
@@ -68,13 +78,6 @@ export default function ResetPassword() {
       setMessage(
         `Password reset confirmation message sent. Please check your email and follow the instructions to reset your password.`,
       );
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      await signIn('credentials', {
-        redirect: false,
-        email: 'dinhtruongnguyen11@gmail.com',
-        password: '01011997@',
-      });
-      router.push('/authenticate/login');
     }
   };
   return (

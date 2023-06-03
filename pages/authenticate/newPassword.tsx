@@ -30,11 +30,21 @@ export default function NewPassword() {
     }
   }, []);
 
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        event.preventDefault();
+        submit();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  }, []);
+
   const submit = async () => {
     setLoading(true);
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    // setLoading(false);
-    // return;
 
     var code = router.query.code;
 

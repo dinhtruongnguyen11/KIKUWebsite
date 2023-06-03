@@ -69,25 +69,26 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const u = user as unknown as any;
 
-        const existUser = await prisma.user.findUnique({
-          where: {
-            email: u.email,
-          },
-        });
+        // const existUser = await prisma.user.findUnique({
+        //   where: {
+        //     email: u.email,
+        //   },
+        // });
 
-        if (!existUser) {
-          var password =
-            '2023' + Math.floor(100000 + Math.random() * 900000).toString();
-          const hashed_password = await hash(password, 12);
-          await prisma.user.create({
-            data: {
-              name: u.name,
-              email: u.email.toLowerCase(),
-              password: hashed_password,
-              verified: true,
-            },
-          });
-        }
+        // if (!existUser) {
+        //   var password =
+        //     '2023' + Math.floor(100000 + Math.random() * 900000).toString();
+        //   const hashed_password = await hash(password, 12);
+        //   await prisma.user.create({
+        //     data: {
+        //       name: u.name,
+        //       email: u.email.toLowerCase(),
+        //       password: hashed_password,
+        //       verified: true,
+        //     },
+        //   });
+        // }
+
         return {
           ...token,
           id: u.id,
