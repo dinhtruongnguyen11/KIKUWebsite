@@ -29,53 +29,50 @@ const sendMail = async (user: any, newCode: any, baseUrl: string) => {
     },
   });
 };
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
-  try {
-    const { email } = req.body;
-
+const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  if (req.method == 'POST') {
     try {
-      const currentUrl = new URL(req.headers.referer as string);
-      var baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
-    } catch {
-      var baseUrl = process.env.NEXTAUTH_URL as string;
-    }
+      const { email } = req.body;
 
-    const existUser = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
+      try {
+        const currentUrl = new URL(req.headers.referer as string);
+        var baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
+      } catch {
+        var baseUrl = process.env.NEXTAUTH_URL as string;
+      }
 
-    if (!existUser) {
-      res.status(404).json({
-        message: 'Email does not exist!',
+      const existUser = await prisma.user.findFirst({
+        where: {
+          email: email,
+        },
       });
-      return;
+
+      if (!existUser) {
+        res.status(404).json({
+          message: 'Email does not exist!',
+        });
+        return;
+      }
+
+      const newCode = await prisma.verificationCode.create({
+        data: {
+          code: Math.floor(100000 + Math.random() * 900000).toString(),
+          email: email.toLowerCase(),
+          type: 'RESET_PASSWORD',
+        },
+      });
+
+      sendMail(existUser, newCode, baseUrl);
+
+      res.status(200).json({
+        message: 'Reset password successful',
+      });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ message: 'An error occurred while reset password', error });
     }
-
-    const newCode = await prisma.verificationCode.create({
-      data: {
-        code: Math.floor(100000 + Math.random() * 900000).toString(),
-        email: email.toLowerCase(),
-        type: 'RESET_PASSWORD',
-      },
-    });
-
-    sendMail(existUser, newCode, baseUrl);
-
-    res.status(200).json({
-      message: 'Reset password successful',
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'An error occurred while reset password', error });
   }
-}
+};
+
+export default handler;
