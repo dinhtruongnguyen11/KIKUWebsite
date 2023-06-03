@@ -48,7 +48,13 @@ const sendOverNodeMailer = async (
     subject,
     html: content,
   };
-  var res = await transporter.sendMail(mailOptions);
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(1, info);
+    }
+  });
   // console.log(1, res);
   // await new Promise((resolve, reject) => {
   //   // send mail
