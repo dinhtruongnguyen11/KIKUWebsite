@@ -6,7 +6,7 @@ import fs from 'fs';
 const sendMail = async (
   name: string,
   email: string,
-  code: any,
+  newCode: any,
   baseUrl: string,
 ) => {
   var path = require('path');
@@ -14,7 +14,7 @@ const sendMail = async (
   var filePath = path.join(configDirectory, 'reset-password.html');
   let template = fs.readFileSync(filePath, 'utf-8');
 
-  var resetLink = `${baseUrl}/authenticate/newPassword?code=` + code.code;
+  var resetLink = `${baseUrl}/authenticate/newPassword?code=` + newCode.code;
   template = template.replace('&username', name);
   template = template.replace('&reset_link', resetLink);
 
@@ -23,10 +23,9 @@ const sendMail = async (
     to: email,
     content: template,
     subject,
-    code: code.code,
   };
 
-  const res = await fetch(`${baseUrl}/api/sendMail`, {
+  await fetch(`${baseUrl}/api/sendMail`, {
     method: 'POST',
     body: JSON.stringify(body),
     headers: {
@@ -44,10 +43,15 @@ export default async function handler(
 
   try {
     const { email } = req.body;
-    const currentUrl = new URL(req.headers.referer as string);
-    const baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
 
-    const existUser = await prisma.user.findUnique({
+    try {
+      const currentUrl = new URL(req.headers.referer as string);
+      var baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
+    } catch {
+      var baseUrl = process.env.NEXTAUTH_URL as string;
+    }
+
+    const existUser = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -55,7 +59,7 @@ export default async function handler(
 
     if (!existUser) {
       res.status(404).json({
-        message: 'Email does not exist',
+        message: 'Email does not exist!',
       });
       return;
     }
@@ -76,6 +80,6 @@ export default async function handler(
   } catch (error) {
     res
       .status(500)
-      .json({ message: 'An error occurred while sending the email', error });
+      .json({ message: 'An error occurred while reset password', error });
   }
 }
