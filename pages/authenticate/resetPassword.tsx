@@ -1,34 +1,49 @@
 import { IconArrowBack, IconChevronLeft } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
+import LoadingIcons from 'react-loading-icons';
 
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function ResetPassword() {
   const { data: session } = useSession();
-  if (session) {
-    signOut();
-  }
+  const [loading, setLoading] = useState(false);
+
   const input_style =
     'form-control text-center block w-full px-4 py-3 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
 
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [showInput, setShowInput] = useState(true);
   const [message, setMessage] = useState(
     `Enter your email and we'll send you a link to reset your password.`,
   );
 
+  useEffect(() => {
+    if (session) {
+      signOut();
+    }
+  }, []);
+
   const submit = async () => {
+    setLoading(true);
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // setLoading(false);
+    // return;
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (email.trim() === '') {
       alert('Please enter your email address.');
+      setLoading(false);
       return;
     }
 
     if (!emailRegex.test(email)) {
       alert('Invalid email address.');
+      setLoading(false);
       return;
     }
 
@@ -42,7 +57,8 @@ export default function ResetPassword() {
 
     if (!res.ok) {
       res.json().then((value) => {
-        alert(value.message);
+        setLoading(false);
+        setError(value.message);
       });
     } else {
       setShowInput(false);
@@ -54,7 +70,7 @@ export default function ResetPassword() {
   return (
     <>
       <Head>
-        <title>Reset password</title>
+        <title>Forgot password</title>
         <meta
           name="description"
           content="Empowering your growth through continous AI learning."
@@ -73,6 +89,9 @@ export default function ResetPassword() {
   justify-center items-center p-3 sm:px-0"
       >
         <div className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg">
+          <div className="flex w-full items-center justify-center mb-5">
+            <Image src="/kikulg.ico" alt="" width={60} height={60} />
+          </div>
           <span className="text-center w-full font-bold text-xl mb-5">
             Forgot password
           </span>
@@ -85,6 +104,11 @@ export default function ResetPassword() {
           </span>
 
           <div className={`${showInput ? 'block' : 'hidden'}`}>
+            {error && (
+              <p className="text-center font-semibold text-sm text-red-300 mb-5 rounded">
+                {error}
+              </p>
+            )}
             <div className="flex mb-5 gap-1.5">
               <input
                 required
@@ -96,19 +120,25 @@ export default function ResetPassword() {
                 }}
                 value={email}
                 className={`${input_style}`}
+                ref={(input) => input && input.focus()}
               />
             </div>
 
             <button
               type="button"
               onClick={submit}
-              className="inline-block px-7 py-3 hover:bg-blue-700 bg-blue-600 
-    text-white font-medium text-sm leading-snug  rounded mb-8
+              className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
+    text-white font-medium text-sm leading-snug  rounded mb-8 h-11
     shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
     focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
     ease-in-out w-full"
+              disabled={loading}
             >
-              Submit
+              {loading ? (
+                <LoadingIcons.Oval height={25} strokeWidth={5} />
+              ) : (
+                'Submit'
+              )}
             </button>
           </div>
 

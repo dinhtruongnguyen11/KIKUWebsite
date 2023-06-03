@@ -1,7 +1,9 @@
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
+import LoadingIcons from 'react-loading-icons';
 
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
@@ -35,7 +37,6 @@ export default function LoginPage() {
   }, []);
 
   useEffect(() => {
-    // Cập nhật giá trị của các input khi biến 'data' thay đổi
     data.forEach((item, index) => {
       const inputElement = document.getElementById(
         `input-${index}`,
@@ -54,7 +55,6 @@ export default function LoginPage() {
   const handlePaste = async (event: any) => {
     const clipboardData = event.clipboardData || window.Clipboard;
     const text = clipboardData.getData('text');
-    // Xử lý dữ liệu từ clipboard ở đây
     updateValue(text);
   };
 
@@ -63,7 +63,6 @@ export default function LoginPage() {
       event.preventDefault();
       try {
         const text = await navigator.clipboard.readText();
-        // Xử lý dữ liệu từ clipboard ở đây
         updateValue(text);
       } catch (error) {}
     }
@@ -76,11 +75,16 @@ export default function LoginPage() {
 
   const submit = async () => {
     setLoading(true);
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // setLoading(false);
+    // return;
+
     var code = data.join('');
     var email = session?.user?.email;
 
     if (code.length < 6) {
       alert('Please input your verification code!');
+      setLoading(false);
       return;
     }
 
@@ -131,6 +135,9 @@ export default function LoginPage() {
         onKeyDown={handleKeyDown}
       >
         <div className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg">
+          <div className="flex w-full items-center justify-center mb-5">
+            <Image src="/kikulg.ico" alt="" width={60} height={60} />
+          </div>
           <span className="text-center w-full font-bold text-xl mb-5">
             Enter your code
           </span>
@@ -163,14 +170,18 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={submit}
-            className="inline-block px-7 py-3 hover:bg-blue-700 bg-blue-600 
-        text-white font-medium text-sm leading-snug  rounded 
+            className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
+        text-white font-medium text-sm leading-snug  rounded h-11
         shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
         focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
         ease-in-out w-full"
             disabled={loading}
           >
-            {loading ? '...' : 'Submit'}
+            {loading ? (
+              <LoadingIcons.Oval height={25} strokeWidth={5} />
+            ) : (
+              'Submit'
+            )}
           </button>
         </div>
       </main>

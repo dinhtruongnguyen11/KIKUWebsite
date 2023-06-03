@@ -27,11 +27,10 @@ const sendMail = async (
     to: user.email,
     content: template,
     subject,
+    code,
   };
 
-  console.log(JSON.stringify(body));
-
-  const res = await fetch(`${baseUrl}/api/sendMail`, {
+  await fetch(`${baseUrl}/api/sendMail`, {
     method: 'POST',
     body: JSON.stringify(body),
     headers: {
@@ -43,11 +42,8 @@ const sendMail = async (
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   if (req.method === 'POST') {
     try {
-      console.log('START REGISTER');
-      let baseUrl = process.env.BASE_URL ? process.env.BASE_URL : '';
-
-      // await prisma.user.deleteMany({});
-      // await prisma.verificationCode.deleteMany({});
+      const currentUrl = new URL(req.headers.referer as string);
+      const baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
 
       const { name, email, password } = (await req.body) as {
         name: string;
@@ -66,9 +62,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         res.status(500).json({
           message: 'Your email already exists.',
         });
+        return;
       }
 
-      const user = await prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           name,
           email: email.toLowerCase(),
@@ -84,12 +81,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         },
       });
 
-      const rs = sendMail(user, newCode, name, email, password, baseUrl);
+      sendMail(newUser, newCode, name, email, password, baseUrl);
 
       res.status(200).json({
         user: {
-          name: user.name,
-          email: user.email,
+          name: newUser.name,
+          email: newUser.email,
         },
       });
     } catch (error: any) {

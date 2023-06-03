@@ -1,15 +1,17 @@
 import { IconArrowBack, IconChevronLeft } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
+import LoadingIcons from 'react-loading-icons';
 
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 export default function NewPassword() {
   const { data: session } = useSession();
-  if (session) {
-    signOut();
-  }
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const { push } = useRouter();
 
   const [password, setPassword] = useState('');
@@ -18,22 +20,39 @@ export default function NewPassword() {
     'form-control text-center block w-full px-4 py-3 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
 
   const router = useRouter();
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (emailInputRef.current) {
+      emailInputRef.current.focus();
+    }
+    if (session) {
+      signOut();
+    }
+  }, []);
 
   const submit = async () => {
+    setLoading(true);
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // setLoading(false);
+    // return;
+
     var code = router.query.code;
 
     if (password !== rePassword) {
-      alert('The re-entered password is incorrect.');
+      setError('The re-entered password is incorrect.');
+      setLoading(false);
       return;
     }
 
     if (password === '') {
-      alert('Please enter a password.');
+      setError('Please enter a password.');
+      setLoading(false);
       return;
     }
 
     if (password.length < 6) {
-      alert('Password must be at least 6 characters long.');
+      setError('Password must be at least 6 characters long.');
+      setLoading(false);
       return;
     }
 
@@ -48,7 +67,8 @@ export default function NewPassword() {
 
     if (!res.ok) {
       res.json().then((value) => {
-        alert(value.message);
+        setError(value.message);
+        setLoading(false);
       });
     } else {
       res.json().then((value) => {
@@ -79,6 +99,9 @@ export default function NewPassword() {
   justify-center items-center p-3 sm:px-0"
       >
         <div className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg">
+          <div className="flex w-full items-center justify-center mb-5">
+            <Image src="/kikulg.ico" alt="" width={60} height={60} />
+          </div>
           <span className="text-center w-full font-bold text-xl mb-5">
             Reset your password
           </span>
@@ -90,17 +113,24 @@ export default function NewPassword() {
             Please enter a new password below.
           </span>
 
+          {error && (
+            <p className="text-center font-semibold text-sm text-red-300 mb-5 rounded">
+              {error}
+            </p>
+          )}
+
           <div className="flex mb-5 gap-1.5">
             <input
               required
               type="password"
               name="password"
-              placeholder="New Password"
+              placeholder="New password"
               className={`${input_style}`}
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
+              ref={emailInputRef}
             />
           </div>
           <div className="flex mb-5 gap-1.5">
@@ -108,7 +138,7 @@ export default function NewPassword() {
               required
               type="password"
               name="re-password"
-              placeholder="Re-enter new Password"
+              placeholder="Re-enter new password"
               className={`${input_style}`}
               value={rePassword}
               onChange={(e) => {
@@ -120,13 +150,18 @@ export default function NewPassword() {
           <button
             type="button"
             onClick={submit}
-            className="inline-block px-7 py-3 hover:bg-blue-700 bg-blue-600 
-    text-white font-medium text-sm leading-snug  rounded mb-8
+            className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
+    text-white font-medium text-sm leading-snug  rounded mb-8 h-11
     shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
     focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
     ease-in-out w-full"
+            disabled={loading}
           >
-            Change
+            {loading ? (
+              <LoadingIcons.Oval height={25} strokeWidth={5} />
+            ) : (
+              'Update password'
+            )}
           </button>
         </div>
       </main>

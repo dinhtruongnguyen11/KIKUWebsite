@@ -1,7 +1,9 @@
 // "use client";
 import { signIn } from 'next-auth/react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import LoadingIcons from 'react-loading-icons';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -17,10 +19,21 @@ export const RegisterForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (emailInputRef.current) {
+      emailInputRef.current.focus();
+    }
+  }, []);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setFormValues({ name: '', email: '', password: '' });
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // setLoading(false);
+    // return;
+
+    // setFormValues({ name: '', email: '', password: '' });
 
     // Validate
     if (formValues.name.trim() === '') {
@@ -60,8 +73,6 @@ export const RegisterForm = () => {
       setLoading(false);
       return;
     }
-
-    console.log(JSON.stringify(formValues));
 
     try {
       const res = await fetch('/api/register', {
@@ -106,9 +117,13 @@ export const RegisterForm = () => {
       onSubmit={onSubmit}
       className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg"
     >
+      <div className="flex w-full items-center justify-center mb-5">
+        <Image src="/kikulg.ico" alt="" width={60} height={60} />
+      </div>
       <span className="text-center w-full font-bold text-2xl mb-2">
         Sign up
       </span>
+
       <span className="text-center w-full text-xs  mb-4">
         Already have an account?{' '}
         <Link
@@ -120,7 +135,7 @@ export const RegisterForm = () => {
       </span>
       <a
         className="px-7 py-2 text-gray-700 font-medium text-sm leading-snug 
-         rounded border hover:bg-gray-100
+         rounded border hover:bg-gray-100 h-11
         focus:outline-none focus:ring-0 transition 
         duration-150 ease-in-out w-full flex justify-center items-center mb-3"
         onClick={() => signIn('google', { callbackUrl })}
@@ -150,8 +165,9 @@ export const RegisterForm = () => {
           name="name"
           value={formValues.name}
           onChange={handleChange}
-          placeholder="Name"
+          placeholder="Full name"
           className={`${input_style}`}
+          ref={emailInputRef}
         />
       </div>
       <div className="mb-6">
@@ -179,12 +195,18 @@ export const RegisterForm = () => {
 
       <button
         type="submit"
-        style={{ backgroundColor: `${loading ? '#ccc' : '#3446eb'}` }}
-        className="inline-block px-7 py-3 bg-blue-600 text-white 
-        font-medium text-sm leading-snug  rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+        className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
+        text-white font-medium text-sm leading-snug  rounded h-11
+        shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
+        focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
+        ease-in-out w-full"
         disabled={loading}
       >
-        {loading ? 'Loading...' : 'Sign Up'}
+        {loading ? (
+          <LoadingIcons.Oval height={25} strokeWidth={5} />
+        ) : (
+          'Sign Up'
+        )}
       </button>
     </form>
   );

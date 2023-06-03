@@ -10,7 +10,7 @@ export const ChatLoader: FC<Props> = () => {
       style={{ overflowWrap: 'anywhere' }}
     >
       <div className="min-w-[40px] text-right font-bold text-gray-600 sm:hidden">
-        <IconRobot size={30} />
+        <img src="/kikulg2.ico" className="w-8 h-8" />
       </div>
       <div
         className={`relative w-full rounded-xl m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 text-gray-800 bg-white shadow`}

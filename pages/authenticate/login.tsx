@@ -16,7 +16,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>Sign in</title>
+        <title>Sign In</title>
         <meta
           name="description"
           content="Empowering your growth through continous AI learning."

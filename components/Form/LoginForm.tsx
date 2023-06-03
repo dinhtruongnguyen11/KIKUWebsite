@@ -1,7 +1,8 @@
-// "use client";
 import { signIn } from 'next-auth/react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import LoadingIcons from 'react-loading-icons';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -17,11 +18,22 @@ export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (emailInputRef.current) {
+      emailInputRef.current.focus();
+    }
+  }, []);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      setFormValues({ email: '', password: '' });
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      // setLoading(false);
+      // return;
+
+      // setFormValues({ email: '', password: '' });
 
       const res = await signIn('credentials', {
         redirect: false,
@@ -30,12 +42,11 @@ export const LoginForm = () => {
         callbackUrl,
       });
 
-      setLoading(false);
-
       if (!res?.error) {
         router.push(callbackUrl);
       } else {
-        setError('invalid email or password');
+        setError('Invalid email or password');
+        setLoading(false);
       }
     } catch (error: any) {
       setLoading(false);
@@ -54,8 +65,11 @@ export const LoginForm = () => {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg"
+      className="flex  flex-col w-96 bg-white px-6 py-7 shadow rounded-lg"
     >
+      <div className="flex w-full items-center justify-center mb-5">
+        <Image src="/kikulg.ico" alt="" width={60} height={60} />
+      </div>
       <span className="text-center w-full font-bold text-2xl mb-2">
         Sign in
       </span>
@@ -70,7 +84,7 @@ export const LoginForm = () => {
       </span>
       <a
         className="px-7 py-2 text-gray-700 font-medium text-sm leading-snug 
-         rounded border hover:bg-gray-100
+         rounded border hover:bg-gray-100 h-11
         focus:outline-none focus:ring-0 transition 
         duration-150 ease-in-out w-full flex justify-center items-center mb-3"
         onClick={() => signIn('google', { callbackUrl })}
@@ -103,6 +117,7 @@ export const LoginForm = () => {
           onChange={handleChange}
           placeholder="Email address"
           className={`${input_style}`}
+          ref={emailInputRef}
         />
       </div>
       <div className="mb-2">
@@ -128,14 +143,19 @@ export const LoginForm = () => {
       </div>
       <button
         type="submit"
-        className="inline-block px-7 py-3 hover:bg-blue-700 bg-blue-600 
+        className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
         text-white font-medium text-sm leading-snug  rounded 
         shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
-        focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
+        focus:ring-0 active:bg-blue-800 active:shadow-lg transition 
+        duration-150 h-11
         ease-in-out w-full"
         disabled={loading}
       >
-        {loading ? 'Loading...' : 'Sign In'}
+        {loading ? (
+          <LoadingIcons.Oval height={25} strokeWidth={5} />
+        ) : (
+          'Sign In'
+        )}
       </button>
     </form>
   );

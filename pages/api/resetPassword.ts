@@ -6,7 +6,7 @@ import fs from 'fs';
 const sendMail = async (
   name: string,
   email: string,
-  resetLink: string,
+  code: any,
   baseUrl: string,
 ) => {
   var path = require('path');
@@ -14,6 +14,7 @@ const sendMail = async (
   var filePath = path.join(configDirectory, 'reset-password.html');
   let template = fs.readFileSync(filePath, 'utf-8');
 
+  var resetLink = `${baseUrl}/authenticate/newPassword?code=` + code.code;
   template = template.replace('&username', name);
   template = template.replace('&reset_link', resetLink);
 
@@ -22,6 +23,7 @@ const sendMail = async (
     to: email,
     content: template,
     subject,
+    code: code.code,
   };
 
   const res = await fetch(`${baseUrl}/api/sendMail`, {
@@ -66,9 +68,7 @@ export default async function handler(
       },
     });
 
-    var resetLink = `${baseUrl}/authenticate/newPassword?code=` + newCode.code;
-
-    sendMail(existUser.name, existUser.email, resetLink, baseUrl);
+    sendMail(existUser.name, existUser.email, newCode, baseUrl);
 
     res.status(200).json({
       message: 'Reset password successful',

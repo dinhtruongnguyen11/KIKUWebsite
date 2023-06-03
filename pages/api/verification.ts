@@ -23,7 +23,7 @@ export default async function handler(
 
     if (!existCode) {
       res.status(404).json({
-        message: 'Authentication code is no longer valid',
+        message: 'Authentication code is no longer valid.',
       });
       return;
     }
@@ -43,11 +43,11 @@ export default async function handler(
     });
 
     res.status(200).json({
-      message: 'Authentication successful',
+      message: 'Authentication successful!',
     });
   } catch (error) {
     res
       .status(500)
-      .json({ message: 'An error occurred while active your account', error });
+      .json({ message: 'An error occurred while active your account!', error });
   }
 }

@@ -23,7 +23,7 @@ export default async function handler(
 
     if (!existCode) {
       res.status(404).json({
-        message: 'Authentication code is no longer valid',
+        message: 'Authentication code is no longer valid.',
       });
       return;
     }

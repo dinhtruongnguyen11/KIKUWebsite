@@ -6,9 +6,11 @@ import {
   IconTrash,
   IconUser,
 } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 
 import { updateConversation } from '@/utils/app/conversation';
 
@@ -47,6 +49,7 @@ export const ChatMessage: FC<Props> = memo(
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [messageContent, setMessageContent] = useState(message.content);
     const [messagedCopied, setMessageCopied] = useState(false);
+    const { data: session } = useSession();
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -142,9 +145,12 @@ export const ChatMessage: FC<Props> = memo(
       >
         <div className="min-w-[40px] text-right font-bold text-gray-600 sm:hidden">
           {message.role === 'assistant' ? (
-            <img src="/kikulg2.ico" className="w-8 h-8" />
+            <Image src="/kikulg2.ico" width={35} height={35} alt="" />
           ) : (
-            <IconUser size={30} />
+            <img
+              className="rounded-full h-10 w-10 border p-1 border-white/20"
+              src={session?.user?.image || '/images/userIcon.png'}
+            />
           )}
         </div>
         <div

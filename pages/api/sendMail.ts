@@ -72,9 +72,11 @@ export default async function handler(
   }
 
   try {
-    const { to, subject, content } = req.body;
+    const { to, subject, content, code } = req.body;
 
-    await sendOverNodeMailer(to, subject, content);
+    // await sendOverNodeMailer(to, subject, content);
+    console.log('CODE: ', code);
+
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     res
