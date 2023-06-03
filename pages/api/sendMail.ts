@@ -48,13 +48,16 @@ const sendOverNodeMailer = async (
     subject,
     html: content,
   };
-  transporter.sendMail(mailOptions, (err, info) => {
+  await transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.error(err);
+      return false;
     } else {
-      console.log(1, info);
+      console.log(info);
+      return true;
     }
   });
+  return true;
   // console.log(1, res);
   // await new Promise((resolve, reject) => {
   //   // send mail
@@ -81,9 +84,15 @@ export default async function handler(
   try {
     const { to, subject, content } = req.body;
 
-    sendOverNodeMailer(to, subject, content);
-
-    res.status(200).json({ message: 'Email sent successfully' });
+    sendOverNodeMailer(to, subject, content).then((rs) => {
+      if (rs) {
+        res.status(200).json({ message: 'Email sent successfully' });
+      } else {
+        res.status(500).json({
+          message: 'An error occurred while sending the email',
+        });
+      }
+    });
   } catch (error) {
     res
       .status(500)
