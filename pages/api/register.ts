@@ -7,8 +7,6 @@ import fs from 'fs';
 const sendMail = async (
   user: any,
   code: any,
-  name: string,
-  email: string,
   password: string,
   baseUrl: string,
 ) => {
@@ -17,9 +15,11 @@ const sendMail = async (
   var filePath = path.join(configDirectory, 'signup-email.html');
   let template = fs.readFileSync(filePath, 'utf-8');
 
-  template = template.replace('&username', name).replace('&username', name);
+  template = template
+    .replace('&username', user.name)
+    .replace('&username', user.name);
   template = template.replace('&code', code.code);
-  template = template.replace('&email', email);
+  template = template.replace('&email', user.email);
   template = template.replace('&password', password);
 
   const subject = `Thanks for signing up, ${user.name}!`;
@@ -81,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         },
       });
 
-      sendMail(newUser, newCode, name, email, password, baseUrl);
+      sendMail(newUser, newCode, password, baseUrl);
 
       res.status(200).json({
         user: {

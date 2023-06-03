@@ -3,26 +3,22 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 
-const sendMail = async (
-  name: string,
-  email: string,
-  newCode: any,
-  baseUrl: string,
-) => {
+const sendMail = async (user: any, newCode: any, baseUrl: string) => {
   var path = require('path');
   const configDirectory = path.resolve(process.cwd(), 'email_templates');
   var filePath = path.join(configDirectory, 'reset-password.html');
   let template = fs.readFileSync(filePath, 'utf-8');
 
   var resetLink = `${baseUrl}/authenticate/newPassword?code=` + newCode.code;
-  template = template.replace('&username', name);
+  template = template.replace('&username', user.name);
   template = template.replace('&reset_link', resetLink);
 
   const subject = `Password Reset`;
   const body = {
-    to: email,
+    to: user.email,
     content: template,
     subject,
+    code: newCode.code,
   };
 
   await fetch(`${baseUrl}/api/sendMail`, {
@@ -72,7 +68,7 @@ export default async function handler(
       },
     });
 
-    sendMail(existUser.name, existUser.email, newCode, baseUrl);
+    sendMail(existUser, newCode, baseUrl);
 
     res.status(200).json({
       message: 'Reset password successful',
