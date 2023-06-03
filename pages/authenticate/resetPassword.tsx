@@ -55,10 +55,11 @@ export default function ResetPassword() {
       },
     });
 
-    if (!res.ok) {
+    if (res.status != 200) {
       res.json().then((value) => {
         setLoading(false);
-        setError(value.message);
+        const info = value.message ? value.message : 'Reset password failed!';
+        setError(info);
       });
     } else {
       setShowInput(false);
