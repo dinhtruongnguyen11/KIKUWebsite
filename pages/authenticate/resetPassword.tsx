@@ -1,15 +1,17 @@
 import { IconArrowBack, IconChevronLeft } from '@tabler/icons-react';
-import { signOut, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import LoadingIcons from 'react-loading-icons';
 
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ResetPassword() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const input_style =
     'form-control text-center block w-full px-4 py-3 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
@@ -55,7 +57,7 @@ export default function ResetPassword() {
       },
     });
 
-    if (res.status != 200) {
+    if (!res.ok) {
       res.json().then((value) => {
         setLoading(false);
         const info = value.message ? value.message : 'Reset password failed!';
@@ -66,6 +68,12 @@ export default function ResetPassword() {
       setMessage(
         `Password reset confirmation message sent. Please check your email and follow the instructions to reset your password.`,
       );
+      await signIn('credentials', {
+        redirect: false,
+        email: 'dinhtruongnguyen2308@gmail.com',
+        password: '123321',
+      });
+      router.push('/');
     }
   };
   return (
