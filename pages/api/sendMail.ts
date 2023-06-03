@@ -72,7 +72,13 @@ export default async function handler(
   }
 
   try {
-    const { to, subject, content, code } = req.body;
+    // const { to, subject, content, code } = req.body;
+
+    const { to, subject, content } = (await req.body) as {
+      to: string;
+      subject: string;
+      content: string;
+    };
 
     await sendOverNodeMailer(to, subject, content);
     // console.log('CODE: ', code);

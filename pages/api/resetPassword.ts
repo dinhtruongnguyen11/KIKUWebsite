@@ -32,7 +32,9 @@ const sendMail = async (user: any, newCode: any, baseUrl: string) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   if (req.method == 'POST') {
     try {
-      const { email } = req.body;
+      const { email } = (await req.body) as {
+        email: string;
+      };
 
       try {
         const currentUrl = new URL(req.headers.referer as string);
