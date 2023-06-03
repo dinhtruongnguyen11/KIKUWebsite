@@ -64,11 +64,17 @@ export default function ResetPassword() {
         setError(info);
       });
     } else {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
       setShowInput(false);
       setMessage(
         `Password reset confirmation message sent. Please check your email and follow the instructions to reset your password.`,
       );
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await signIn('credentials', {
+        redirect: false,
+        email: 'dinhtruongnguyen11@gmail.com',
+        password: '01011997@',
+      });
+      router.push('/authenticate/login');
     }
   };
   return (
