@@ -25,6 +25,7 @@ export default function LoginPage() {
 
   const [data, setData] = useState<string[]>(['', '', '', '', '', '']);
   const inputRefs = useRef<Array<HTMLInputElement>>([]);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleChange = (index: number, value: string) => {
     const newData = [...data];
@@ -57,7 +58,7 @@ export default function LoginPage() {
     const listener = (event: any) => {
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         event.preventDefault();
-        submit();
+        buttonRef.current?.click();
       }
     };
     document.addEventListener('keydown', listener);
@@ -192,6 +193,7 @@ export default function LoginPage() {
         focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
         ease-in-out w-full"
             disabled={loading}
+            ref={buttonRef}
           >
             {loading ? (
               <LoadingIcons.Oval height={25} strokeWidth={5} />

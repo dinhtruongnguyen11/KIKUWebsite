@@ -12,6 +12,7 @@ export default function ResetPassword() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const input_style =
     'form-control text-center block w-full px-4 py-3 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
@@ -33,7 +34,7 @@ export default function ResetPassword() {
     const listener = (event: any) => {
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         event.preventDefault();
-        submit();
+        buttonRef.current?.click();
       }
     };
     document.addEventListener('keydown', listener);
@@ -130,6 +131,7 @@ export default function ResetPassword() {
                 placeholder="Email address"
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  console.log(e.target.value);
                 }}
                 value={email}
                 className={`${input_style}`}
@@ -146,6 +148,7 @@ export default function ResetPassword() {
     focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
     ease-in-out w-full"
               disabled={loading}
+              ref={buttonRef}
             >
               {loading ? (
                 <LoadingIcons.Oval height={25} strokeWidth={5} />

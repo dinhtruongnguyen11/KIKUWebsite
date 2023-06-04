@@ -15,6 +15,7 @@ export default function NewPassword() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [code, setCode] = useState('');
 
   const { push } = useRouter();
 
@@ -25,6 +26,7 @@ export default function NewPassword() {
 
   const router = useRouter();
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (emailInputRef.current) {
       emailInputRef.current.focus();
@@ -32,13 +34,15 @@ export default function NewPassword() {
     if (session) {
       signOut();
     }
+
+    setCode(router.query.code as string);
   }, []);
 
   useEffect(() => {
     const listener = (event: any) => {
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         event.preventDefault();
-        submit();
+        buttonRef.current?.click();
       }
     };
     document.addEventListener('keydown', listener);
@@ -50,7 +54,14 @@ export default function NewPassword() {
   const submit = async () => {
     setLoading(true);
 
-    var code = router.query.code;
+    const code = router.query.code as string;
+    console.log(code);
+
+    if (!code) {
+      setError('Authentication code is no longer valid.');
+      setLoading(false);
+      return;
+    }
 
     if (password !== rePassword) {
       setError('The re-entered password is incorrect.');
@@ -170,6 +181,7 @@ export default function NewPassword() {
     focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
     ease-in-out w-full"
             disabled={loading}
+            ref={buttonRef}
           >
             {loading ? (
               <LoadingIcons.Oval height={25} strokeWidth={5} />
