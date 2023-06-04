@@ -16,7 +16,7 @@ export default function RegisterPage() {
   return (
     <>
       <Head>
-        <title>Sign Up</title>
+        <title>Sign up</title>
         <meta
           name="description"
           content="Empowering your growth through continous AI learning."

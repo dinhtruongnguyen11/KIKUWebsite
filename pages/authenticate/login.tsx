@@ -1,6 +1,7 @@
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 
 import { LoginForm } from '@/components/Form/LoginForm';
@@ -16,7 +17,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>Sign In</title>
+        <title>Sign in</title>
         <meta
           name="description"
           content="Empowering your growth through continous AI learning."
@@ -39,3 +40,12 @@ export default function LoginPage() {
     </>
   );
 }
+// export const getServerSideProps: GetServerSideProps = async (
+//   context: GetServerSidePropsContext,
+// ) => {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations('en', ['authenticate'])),
+//     },
+//   };
+// };
