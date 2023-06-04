@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const u = user as unknown as any;
 
-        const existUser = await prisma.user.findUnique({
+        const existUser = await prisma.user.findFirst({
           where: {
             email: u.email,
           },
