@@ -2,9 +2,13 @@ import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import LoadingIcons from 'react-loading-icons';
 
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
+import { authOptions } from '../api/auth/[...nextauth]';
 
 export default function LoginPage() {
   const { data: session } = useSession();
@@ -200,3 +204,21 @@ export default function LoginPage() {
     </>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async (
+//   context: GetServerSidePropsContext,
+// ) => {
+//   const session = await getServerSession(context.req, context.res, authOptions);
+//   if (!session) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: '/authenticate/login',
+//       },
+//       props: {},
+//     };
+//   }
+//   return {
+//     props: {},
+//   };
+// };
