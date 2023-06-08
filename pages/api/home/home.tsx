@@ -468,6 +468,22 @@ export const getServerSideProps: GetServerSideProps = async (
         props: {},
       };
     }
+
+    if (existUser?.firstLogin) {
+      await prisma.user.update({
+        where: { email: existUser.email },
+        data: {
+          firstLogin: false,
+        },
+      });
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/plan/pricing',
+        },
+        props: {},
+      };
+    }
   }
 
   const defaultModelId =

@@ -89,6 +89,13 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        await prisma.userLogging.create({
+          data: {
+            type: 'LOGIN',
+            email: u.email.toLowerCase(),
+          },
+        });
+
         return {
           ...token,
           id: u.id,

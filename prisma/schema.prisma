@@ -16,6 +16,7 @@ model User {
   email    String @unique
   password String
   verified Boolean @default(false)   
+  firstLogin Boolean @default(true)   
   role    Role     @default(USER) 
   plan    Plan  @default(FREE) 
 }
@@ -26,6 +27,13 @@ model VerificationCode {
   email          String
   type          String
   active        Boolean @default(true)   
+  createdAt       DateTime @default(now())
+}
+
+model UserLogging {
+  id       String @id @default(uuid())
+  type            String   
+  email          String
   createdAt       DateTime @default(now())
 }
 
