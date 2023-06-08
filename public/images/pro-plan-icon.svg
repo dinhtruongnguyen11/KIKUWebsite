@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <mask id="mask0_75_789" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="90" height="90">
+    <circle cx="45" cy="45" r="45" fill="#E4E9FF"/>
+  </mask>
+  <g mask="url(#mask0_75_789)">
+    <circle cx="45" cy="45" r="45" fill="#E4E9FF"/>
+    <mask id="mask1_75_789" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="18" y="29" width="54" height="71">
+      <rect x="18" y="29" width="54" height="71" rx="12" fill="#4791FF"/>
+    </mask>
+    <g mask="url(#mask1_75_789)">
+      <rect x="18" y="29" width="54" height="71" rx="12" fill="#2A2368"/>
+      <rect x="26" y="52" width="38" height="13" rx="6.5" fill="#554E90"/>
+      <path d="M33.5 56H51" stroke="#2AAAE3" stroke-width="2" stroke-linecap="round"/>
+      <path opacity="0.5" d="M33.5 61H43" stroke="#2AAAE3" stroke-width="2" stroke-linecap="round"/>
+      <rect x="26" y="69" width="38" height="13" rx="6.5" fill="#554E91"/>
+      <path d="M33.5 73H51" stroke="#2AAAE3" stroke-width="2" stroke-linecap="round"/>
+      <path opacity="0.5" d="M33.5 78H43" stroke="#2AAAE3" stroke-width="2" stroke-linecap="round"/>
+      <circle opacity="0.1" cx="45" cy="33" r="15" fill="#050D35"/>
+    </g>
+    <circle cx="45" cy="30" r="15" fill="#4791FF"/>
+    <path d="M43.5898 24.5762C44.0337 23.2101 45.9663 23.2101 46.4102 24.5762C46.8765 26.0112 48.2137 26.9828 49.7225 26.9828C51.1589 26.9828 51.7562 28.8209 50.5941 29.6652C49.3734 30.552 48.8626 32.124 49.3289 33.559C49.7728 34.9251 48.2092 36.0611 47.0471 35.2168C45.8265 34.3299 44.1735 34.3299 42.9529 35.2168C41.7908 36.0611 40.2272 34.9251 40.6711 33.559C41.1374 32.124 40.6266 30.552 39.4059 29.6652C38.2438 28.8209 38.8411 26.9828 40.2775 26.9828C41.7863 26.9828 43.1235 26.0112 43.5898 24.5762Z" stroke="#2AAAE3" stroke-width="2"/>
+  </g>
+</svg>

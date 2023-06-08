@@ -58,13 +58,21 @@ export const RegisterForm = () => {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (formValues.email.trim() === '') {
       setError('Please enter your email address.');
       setLoading(false);
       return;
     }
+
+    var specialRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!specialRegex.test(formValues.password)) {
+      setError('Password must contain at least one special character!');
+      setLoading(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(formValues.email)) {
       setError('Invalid email address.');
@@ -78,8 +86,8 @@ export const RegisterForm = () => {
       return;
     }
 
-    if (formValues.password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (formValues.password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       setLoading(false);
       return;
     }
