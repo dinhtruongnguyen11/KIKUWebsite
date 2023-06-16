@@ -18,7 +18,6 @@ import { Settings } from '@/types/settings';
 
 import HomeContext from '@/pages/api/home/home.context';
 
-import UserTagSidebar from '../User/UserTag';
 
 export default function LanguageSwitch() {
   const { t, i18n } = useTranslation('settings');

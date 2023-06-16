@@ -1,4 +1,5 @@
 // import { IconClearAll, IconSettings } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import {
   MutableRefObject,
   memo,
@@ -55,6 +56,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       modelError,
       loading,
       prompts,
+      wordCount,
+      imageCount,
     },
     handleUpdateConversation,
     dispatch: homeDispatch,
@@ -71,9 +74,12 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const { data: session } = useSession();
+
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
       // handleScrollDown();
+     
       if (selectedConversation) {
         let updatedConversation: Conversation;
         if (deleteCount) {
@@ -163,6 +169,13 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             field: 'selectedConversation',
             value: updatedConversation,
           });
+
+          homeDispatch({
+            field: 'imageCount',
+            value: imageCount + 1,
+          });
+
+          console.log(imageCount);
         } else {
           const endpoint = getEndpoint(plugin);
           let body;
@@ -250,6 +263,15 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                 value: updatedConversation,
               });
             }
+          }
+
+          if (text.trim().split(/\s+/).length > 0) {
+            homeDispatch({
+              field: 'wordCount',
+              value: wordCount + text.trim().split(/\s+/).length,
+            });
+            console.log(text.trim().split(/\s+/));
+            console.log(wordCount);
           }
         }
 
@@ -339,6 +361,40 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         selectedConversation.messages[selectedConversation.messages.length - 2],
       );
   }, [selectedConversation, throttledScrollDown]);
+
+  useEffect(() => {
+    const update = async () => {
+      await fetch('/api/updateUsage', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: session?.user?.email,
+          type: 'IMAGE',
+          value: imageCount,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    };
+    update();
+  }, [imageCount]);
+
+  useEffect(() => {
+    const update = async () => {
+      await fetch('/api/updateUsage', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: session?.user?.email,
+          type: 'WORD',
+          value: wordCount,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    };
+    update();
+  }, [wordCount]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

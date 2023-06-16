@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@material-tailwind/react';
 import { Button } from '@material-tailwind/react';
 import { IconStarFilled } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -53,18 +54,25 @@ interface Props {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: OpenAIModelID;
+  isPaid:boolean,
+  wordCount:number,
+  imageCount:number
 }
 
 const Home = ({
   serverSideApiKeyIsSet,
   serverSidePluginKeysSet,
   defaultModelId,
+  isPaid,
+  wordCount,
+  imageCount
 }: Props) => {
   const { t, i18n } = useTranslation('chat');
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
-  const [sheetData, setSheetData] = useState();
+  const { data: session } = useSession();
+
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -100,6 +108,10 @@ const Home = ({
     },
     { enabled: true, refetchOnMount: false },
   );
+
+  
+
+
   useEffect(() => {
     if (data) dispatch({ field: 'models', value: data });
   }, [data, dispatch]);
@@ -261,6 +273,13 @@ const Home = ({
   // ON LOAD --------------------------------------------
 
   useEffect(() => {
+    dispatch({ field: 'isPaid', value: isPaid });
+    dispatch({ field: 'wordCount', value: wordCount });
+    dispatch({ field: 'imageCount', value: imageCount });
+  }, [])
+  
+
+  useEffect(() => {
     const settings = getSettings();
     if (settings.theme) {
       dispatch({
@@ -278,6 +297,9 @@ const Home = ({
     } else {
       i18n.changeLanguage('en');
     }
+
+ 
+
 
     const apiKey = localStorage.getItem('apiKey');
 
@@ -444,6 +466,9 @@ export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext,
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
+  let isPaid = false;
+  let wordCount = 0;
+  let imageCount = 0;
   if (session == null) {
     return {
       redirect: {
@@ -458,6 +483,10 @@ export const getServerSideProps: GetServerSideProps = async (
         email: session.user.email?.toLowerCase(),
       },
     });
+
+    isPaid = existUser?.plan =='PAID'
+    wordCount = existUser?.wordCount as number
+    imageCount = existUser?.imageCount as number
 
     if (!existUser?.verified) {
       return {
@@ -498,6 +527,9 @@ export const getServerSideProps: GetServerSideProps = async (
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
       defaultModelId,
+      isPaid,
+      wordCount,
+      imageCount,
       ...(await serverSideTranslations('es', [
         'common',
         'chat',

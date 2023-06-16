@@ -15,7 +15,7 @@ function App({ Component, pageProps }: AppProps<{}>) {
 
   return (
     <div className={inter.className}>
-      <Toaster />
+      <Toaster position="top-right"/>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <Component {...pageProps} />

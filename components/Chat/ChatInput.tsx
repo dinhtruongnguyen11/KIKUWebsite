@@ -21,6 +21,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import toast from 'react-hot-toast';
 
 import { useTranslation } from 'next-i18next';
 
@@ -53,7 +54,15 @@ export const ChatInput = ({
   const { t } = useTranslation('chat');
 
   const {
-    state: { selectedConversation, messageIsStreaming, prompts, roleList },
+    state: {
+      selectedConversation,
+      messageIsStreaming,
+      prompts,
+      wordCount,
+      imageCount,
+      isPaid,
+      
+    },
 
     dispatch: homeDispatch,
   } = useContext(HomeContext);
@@ -67,6 +76,8 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('text');
+
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -97,8 +108,23 @@ export const ChatInput = ({
       return;
     }
 
+    if (!isPaid) {
+      if (wordCount >= 2000 && selectedOption == 'text') {
+        toast.error(
+          'You have exceeded the limit for text generation. Please upgrade your account to continue using this feature.',
+        );
+        return;
+      }
+      if (imageCount >= 5 && selectedOption == 'image') {
+        toast.error(
+          'You have exceeded the limit for image generation. Please upgrade your account to continue using this feature.',
+        );
+        return;
+      }
+    }
+
     if (!content) {
-      alert(t('Please enter a message'));
+      toast.error(t('Please enter a message'));
       return;
     }
 
@@ -273,7 +299,6 @@ export const ChatInput = ({
     };
   }, []);
 
-  const [selectedOption, setSelectedOption] = useState('text');
 
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);

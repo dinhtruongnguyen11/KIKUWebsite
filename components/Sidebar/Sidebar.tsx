@@ -1,6 +1,14 @@
-import { IconFolderPlus, IconMistOff, IconPlus } from '@tabler/icons-react';
+import {
+  IconFolderPlus,
+  IconLogout,
+  IconMistOff,
+  IconPlus,
+  IconUser,
+} from '@tabler/icons-react';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import Image from 'next/image';
 
 import {
   CloseSidebarButton,
@@ -65,10 +73,11 @@ const Sidebar = <T,>({
         px-5 text-[12px] transition-all sm:relative sm:top-0`}
       >
         {side == 'left' && (
-          <>
+          <div className="border-b  border-white/20  pb-5">
             <LanguageSwitch />
             <UserTagSidebar />
-          </>
+
+          </div>
         )}
 
         <div className="flex items-center">

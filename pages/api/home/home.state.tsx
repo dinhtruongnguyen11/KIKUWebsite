@@ -9,6 +9,9 @@ export interface HomeInitialState {
   apiKey: string;
   pluginKeys: PluginKey[];
   loading: boolean;
+  isPaid: boolean;
+  wordCount: number;
+  imageCount: number;
   lightMode: 'light' | 'dark';
   language: 'en' | 'es';
   messageIsStreaming: boolean;
@@ -34,6 +37,9 @@ export interface HomeInitialState {
 export const initialState: HomeInitialState = {
   apiKey: '',
   loading: false,
+  isPaid:false,
+  wordCount:0,
+  imageCount:0,
   pluginKeys: [],
   lightMode: 'dark',
   language: 'en',
