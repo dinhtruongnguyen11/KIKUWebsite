@@ -13,7 +13,7 @@ export const SidebarButton: FC<Props> = ({ text, icon, onClick }) => {
       onClick={onClick}
     >
       <div>{icon}</div>
-      <span className="text-left overflow-hidden whitespace-nowrap text-overflow-ellipsis">
+      <span className="text-left  whitespace-nowrap text-overflow-ellipsis">
         {text}
       </span>
     </button>

@@ -19,7 +19,10 @@ model User {
   firstLogin Boolean @default(true)   
   role    Role     @default(USER) 
   plan    Plan  @default(FREE) 
+  wordCount Int @default(0)   
+  imageCount Int @default(0)  
 }
+
 
 model VerificationCode {
   id       String @id @default(uuid())
@@ -35,6 +38,14 @@ model UserLogging {
   type            String   
   email          String
   createdAt       DateTime @default(now())
+}
+
+model Payment {
+        id      Int    @id @default(autoincrement())
+        orderID String
+        status  String
+        email String
+        createdAt       DateTime @default(now())
 }
 
 enum Role {

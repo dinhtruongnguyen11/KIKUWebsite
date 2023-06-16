@@ -46,7 +46,7 @@ export const OpenSidebarButton = ({ onClick, side }: Props) => {
         side === 'right'
           ? 'right-0 rounded-l-xl lg:hidden border-l'
           : 'left-0 rounded-r-xl border-r'
-      } z-20 text-white  ${showChatbar || showPromptbar ? 'hidden' : ''}`}
+      } z-20 text-white  `}
       onClick={onClick}
     >
       {side === 'right' ? <IconStarFilled /> : <IconMessages />}
