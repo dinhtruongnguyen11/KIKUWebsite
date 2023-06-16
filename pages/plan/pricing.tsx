@@ -1,7 +1,7 @@
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Head from 'next/head';
 import Image from 'next/image';
@@ -11,8 +11,13 @@ import { useRouter } from 'next/navigation';
 const Pricing = () => {
   const [showProPlan, setShowProPlan] = useState(true);
   const [paymentComplete, setPaymentComplete] = useState(false);
+  const [email, setEmail] = useState('');
   const { data: session } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    if (session?.user?.email) setEmail(session?.user?.email);
+  }, [session]);
 
   return (
     <>
@@ -241,7 +246,6 @@ const Pricing = () => {
                       const details = await actions.order?.capture();
                       const orderID = details?.id;
                       const status = details?.status;
-                      const email = session?.user?.email;
                       if (
                         status == 'COMPLETED' &&
                         orderID != '' &&
@@ -252,7 +256,7 @@ const Pricing = () => {
                           status,
                           email,
                         };
-                        console.log(body)
+                        console.log(body);
                         const res = await fetch('/api/paypal/captureOrder', {
                           method: 'POST',
                           body: JSON.stringify(body),
