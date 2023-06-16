@@ -2,17 +2,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from '@/lib/prisma';
 
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  
   const { orderID, status, email } = (await req.body) as {
     orderID: string;
     status: string;
     email: string;
   };
 
-  console.log(orderID, status, email)
+  console.log(orderID, status, email);
 
   try {
     //Once order is created store the data using Prisma
@@ -25,7 +23,7 @@ export default async function handle(
     });
 
     await prisma.user.update({
-      where: { email: email },
+      where: { email },
       data: {
         plan: 'PAID',
       },
@@ -34,11 +32,12 @@ export default async function handle(
     res.status(200).json({
       orderID,
       status,
-    });;
-
+    });
   } catch (error: any) {
     res.status(500).json({
       message: error.message,
     });
   }
-}
+};
+
+export default handler;
