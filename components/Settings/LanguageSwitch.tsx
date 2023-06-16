@@ -45,7 +45,7 @@ export default function LanguageSwitch() {
 
   useEffect(() => {
     setSelectedOption(state.language);
-  });
+  },[]);
 
   return (
     <div>

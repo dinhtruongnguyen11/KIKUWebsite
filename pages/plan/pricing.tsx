@@ -17,6 +17,8 @@ const Pricing = () => {
 
   useEffect(() => {
     if (session?.user?.email) setEmail(session?.user?.email);
+    console.log(session?.user?.email)
+
   }, [session]);
 
   return (
