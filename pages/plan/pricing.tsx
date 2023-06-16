@@ -227,7 +227,7 @@ const Pricing = () => {
                     onApprove={async (data, actions) => {
                       const details = await actions.order?.capture();
                       if (details?.status == 'COMPLETED') {
-                        const res = await fetch('/api/paypal/captureOrder', {
+                        const res = await fetch('https://chat.kiku.do/api/paypal/captureOrder', {
                           method: 'POST',
                           body: JSON.stringify({
                             orderID: details?.id,
