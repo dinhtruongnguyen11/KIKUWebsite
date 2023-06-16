@@ -246,11 +246,7 @@ const Pricing = () => {
                       const details = await actions.order?.capture();
                       const orderID = details?.id;
                       const status = details?.status;
-                      if (
-                        status == 'COMPLETED' &&
-                        orderID != '' &&
-                        email != ''
-                      ) {
+                      if (status == 'COMPLETED') {
                         const body = {
                           orderID,
                           status,
