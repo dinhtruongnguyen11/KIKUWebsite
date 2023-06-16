@@ -3,14 +3,18 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
-  
+
   const { orderID, status, email } = (await req.body) as {
     orderID: string;
     status: string;
     email: string;
   };
 
-  console.log(orderID, status, email);
+  if (!orderID || !status || !email) {
+  return res.status(400).json({
+    message: 'Missing required fields in request body.',
+  });
+}
 
   try {
     //Once order is created store the data using Prisma
