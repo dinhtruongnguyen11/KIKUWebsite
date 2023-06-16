@@ -115,7 +115,9 @@ const Pricing = () => {
             </div>
             <div
               className={`${
-                showProPlan && !paymentComplete? 'bg-[#2AAAE3]' : 'bg-white border-4'
+                showProPlan && !paymentComplete
+                  ? 'bg-[#2AAAE3]'
+                  : 'bg-white border-4'
               } flex flex-col lg:w-1/2 w-full p-7 text-white rounded-lg justify-center`}
             >
               {showProPlan && !paymentComplete && (
@@ -196,15 +198,26 @@ const Pricing = () => {
               )}
 
               {paymentComplete && (
-                <div className='text-gray-800 flex flex-col items-center'>
-                  <Image className='mb-3' src="/images/payment-successful.jpg" alt="" width={200} height={200} />
-                  <span className='font-bold mb-1 '>Payment successful! </span>
-                  <span className='text-sm'>You will be redirected to the chat now ...</span>
-
+                <div className="text-gray-800 flex flex-col items-center">
+                  <Image
+                    className="mb-3"
+                    src="/images/payment-successful.jpg"
+                    alt=""
+                    width={200}
+                    height={200}
+                  />
+                  <span className="font-bold mb-1 ">Payment successful! </span>
+                  <span className="text-sm">
+                    You will be redirected to the chat now ...
+                  </span>
                 </div>
               )}
 
-              <div className={`${showProPlan || paymentComplete ? 'hidden' : ''} flex flex-col`}>
+              <div
+                className={`${
+                  showProPlan || paymentComplete ? 'hidden' : ''
+                } flex flex-col`}
+              >
                 <PayPalScriptProvider
                   options={{
                     clientId:
@@ -226,26 +239,35 @@ const Pricing = () => {
                     }}
                     onApprove={async (data, actions) => {
                       const details = await actions.order?.capture();
-                      if (details?.status == 'COMPLETED') {
-                        const res = await fetch('https://chat.kiku.do/api/paypal/captureOrder', {
+                      const orderID = details?.id;
+                      const status = details?.status;
+                      const email = session?.user?.email;
+                      if (
+                        status == 'COMPLETED' &&
+                        orderID != '' &&
+                        email != ''
+                      ) {
+                        const body = {
+                          orderID,
+                          status,
+                          email,
+                        };
+                        console.log(body)
+                        const res = await fetch('/api/paypal/captureOrder', {
                           method: 'POST',
-                          body: JSON.stringify({
-                            orderID: details?.id,
-                            status: details?.status,
-                            email: session?.user?.email,
-                          }),
+                          body: JSON.stringify(body),
                           headers: {
                             'Content-Type': 'application/json',
                           },
                         });
-                        if (!res.ok){
-                          alert('Error when update user info!')
-                          return
+                        if (!res.ok) {
+                          alert('Error when update user info! Try again.');
+                          return;
                         }
                         setPaymentComplete(true);
                         setTimeout(() => {
                           router.push('/');
-                        }, 4000); 
+                        }, 4000);
                       }
                     }}
                   />
