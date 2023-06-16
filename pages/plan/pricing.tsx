@@ -3,23 +3,23 @@ import { IconCircleCheckFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const Pricing = () => {
+import { authOptions } from '../api/auth/[...nextauth]';
+
+interface PricingProps {
+  email: string;
+}
+
+const Pricing = ({ email }: PricingProps) => {
   const [showProPlan, setShowProPlan] = useState(true);
   const [paymentComplete, setPaymentComplete] = useState(false);
-  const [email, setEmail] = useState('');
-  const { data: session } = useSession();
   const router = useRouter();
-
-  useEffect(() => {
-    if (session?.user?.email) setEmail(session?.user?.email);
-    console.log(session?.user?.email)
-
-  }, [session]);
 
   return (
     <>
@@ -281,6 +281,18 @@ const Pricing = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  let email = session?.user?.email?.toLowerCase();
+  return {
+    props: {
+      email,
+    },
+  };
 };
 
 export default Pricing;
