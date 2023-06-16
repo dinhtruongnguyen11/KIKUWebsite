@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const pricing = () => {
+const Pricing = () => {
   const [showProPlan, setShowProPlan] = useState(true);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const { data: session } = useSession();
@@ -259,4 +259,4 @@ const pricing = () => {
   );
 };
 
-export default pricing;
+export default Pricing;
