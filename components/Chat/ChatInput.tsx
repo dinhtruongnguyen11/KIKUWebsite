@@ -61,7 +61,6 @@ export const ChatInput = ({
       wordCount,
       imageCount,
       isPaid,
-      
     },
 
     dispatch: homeDispatch,
@@ -77,7 +76,6 @@ export const ChatInput = ({
   const [plugin, setPlugin] = useState<Plugin | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [selectedOption, setSelectedOption] = useState('text');
-
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -299,7 +297,6 @@ export const ChatInput = ({
     };
   }, []);
 
-
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
 
@@ -336,7 +333,9 @@ export const ChatInput = ({
           selectedConversation &&
           selectedConversation.messages.length > 0 && (
             <button
-              className="absolute hidden sm:flex top-0 left-0 right-0 mx-auto mb-3 w-fit items-center gap-3  bg-white py-2 px-4 text-gray-800 hover:opacity-50 rounded-lg md:mb-0 md:mt-2"
+              className="absolute hidden sm:flex top-0 left-0 right-0 mx-auto mb-3 
+              w-fit items-center gap-3  bg-white py-2 px-4 text-gray-800  rounded-lg 
+              md:mb-0 md:mt-2 hover:shadow-sm"
               onClick={onRegenerate}
             >
               <IconRepeat size={16} /> {t('Regenerate response')}

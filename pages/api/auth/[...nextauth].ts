@@ -84,6 +84,7 @@ export const authOptions: NextAuthOptions = {
               name: u.name,
               email: u.email.toLowerCase(),
               password: hashed_password,
+              plan: 'NONE',
               verified: true,
             },
           });

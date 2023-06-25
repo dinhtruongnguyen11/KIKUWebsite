@@ -39,9 +39,7 @@ import { Prompt } from '@/types/prompt';
 
 import { Chat } from '@/components/Chat/Chat';
 import { Chatbar } from '@/components/Chatbar/Chatbar';
-import { Navbar } from '@/components/Mobile/Navbar';
 import Promptbar from '@/components/Promptbar';
-import LanguageSwitch from '@/components/Settings/LanguageSwitch';
 
 import { authOptions } from '../auth/[...nextauth]';
 import HomeContext from './home.context';
@@ -54,9 +52,9 @@ interface Props {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: OpenAIModelID;
-  isPaid:boolean,
-  wordCount:number,
-  imageCount:number
+  isPaid: boolean;
+  wordCount: number;
+  imageCount: number;
 }
 
 const Home = ({
@@ -65,14 +63,13 @@ const Home = ({
   defaultModelId,
   isPaid,
   wordCount,
-  imageCount
+  imageCount,
 }: Props) => {
   const { t, i18n } = useTranslation('chat');
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
   const { data: session } = useSession();
-
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -108,9 +105,6 @@ const Home = ({
     },
     { enabled: true, refetchOnMount: false },
   );
-
-  
-
 
   useEffect(() => {
     if (data) dispatch({ field: 'models', value: data });
@@ -276,8 +270,7 @@ const Home = ({
     dispatch({ field: 'isPaid', value: isPaid });
     dispatch({ field: 'wordCount', value: wordCount });
     dispatch({ field: 'imageCount', value: imageCount });
-  }, [])
-  
+  }, []);
 
   useEffect(() => {
     const settings = getSettings();
@@ -297,9 +290,6 @@ const Home = ({
     } else {
       i18n.changeLanguage('en');
     }
-
- 
-
 
     const apiKey = localStorage.getItem('apiKey');
 
@@ -400,6 +390,16 @@ const Home = ({
     localStorage.setItem('showPromptbar', JSON.stringify(!showPromptbar));
   };
 
+  const chatbarVariants = {
+    hidden: { x: '-100%' }, // Ẩn Chatbar bên trái
+    visible: { x: '0%' }, // Hiển thị Chatbar
+  };
+
+  const promptbarVariants = {
+    hidden: { x: '100%' }, // Ẩn Promptbar bên phải
+    visible: { x: '0%' }, // Hiển thị Promptbar
+  };
+
   return (
     <ThemeProvider>
       <HomeContext.Provider
@@ -434,11 +434,13 @@ const Home = ({
           >
             <div className="flex h-full w-full pt-5 sm:pt-0">
               <Chatbar />
+
               <div className="flex flex-1">
                 <Chat stopConversationRef={stopConversationRef} />
               </div>
 
               <Promptbar />
+
               <div
                 className={`fixed right-8 top-20 z-50 hidden  ${
                   contextValue.state.showPromptbar ? 'hidden' : 'lg:block'
@@ -484,9 +486,9 @@ export const getServerSideProps: GetServerSideProps = async (
       },
     });
 
-    isPaid = existUser?.plan =='PAID'
-    wordCount = existUser?.wordCount as number
-    imageCount = existUser?.imageCount as number
+    isPaid = existUser?.plan == 'PAID';
+    wordCount = existUser?.wordCount as number;
+    imageCount = existUser?.imageCount as number;
 
     if (!existUser?.verified) {
       return {
@@ -498,13 +500,7 @@ export const getServerSideProps: GetServerSideProps = async (
       };
     }
 
-    if (existUser?.firstLogin) {
-      await prisma.user.update({
-        where: { email: existUser.email },
-        data: {
-          firstLogin: false,
-        },
-      });
+    if (existUser.plan == 'NONE') {
       return {
         redirect: {
           permanent: false,

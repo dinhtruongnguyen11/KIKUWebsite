@@ -79,7 +79,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
       // handleScrollDown();
-     
+
+      console.log(selectedConversation?.model);
+
       if (selectedConversation) {
         let updatedConversation: Conversation;
         if (deleteCount) {
@@ -462,16 +464,16 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           >
             <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-0 md:pt-12 sm:max-w-[750px] ">
               <div className="text-center font-semibold text-gray-800 ">
-                <div className="px-3 text-center text-[25px] text-black">
+                <div className="px-3 text-center text-[25px] text-black mb-10">
                   <img
                     src="/kikulg.ico"
                     alt="Kiku icon"
                     className="inline-block align-middle mr-2 w-14 h-14"
                   />
                 </div>
-                <div className="sm:px-3 px-20 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2 ">
+                {/* <div className="sm:px-3 px-20 font-normal pb-3 text-center text-[12px] text-gray-600 mt-2 ">
                   {t('Empowering your growth through continous AI learning')}
-                </div>
+                </div> */}
                 <PromptRole />
               </div>
 

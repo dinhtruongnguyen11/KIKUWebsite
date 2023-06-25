@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from '@/lib/prisma';
+import { Plan } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import fs from 'fs';
 
@@ -45,33 +46,54 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       const currentUrl = new URL(req.headers.referer as string);
       const baseUrl = `${currentUrl.protocol}//${currentUrl.host}`;
 
-      const { name, email, password } = (await req.body) as {
+      const { name, email, password, reSend } = (await req.body) as {
         name: string;
         email: string;
         password: string;
+        reSend: string;
       };
-      const hashed_password = await hash(password, 12);
 
-      const existUser = await prisma.user.findFirst({
-        where: {
-          email: email.toLowerCase(),
-        },
-      });
+      let newUser: any;
 
-      if (existUser) {
-        res.status(500).json({
-          message: 'Your email already exists.',
+      if (reSend && reSend == '1') {
+        const existUser = await prisma.user.findFirst({
+          where: {
+            email: email.toLowerCase(),
+          },
         });
-        return;
-      }
 
-      const newUser = await prisma.user.create({
-        data: {
-          name,
-          email: email.toLowerCase(),
-          password: hashed_password,
-        },
-      });
+        if (existUser) {
+          newUser = existUser;
+        } else {
+          res.status(500).json({
+            message: 'Your email does not exist',
+          });
+          return;
+        }
+      } else {
+        const hashed_password = await hash(password, 12);
+        const existUser = await prisma.user.findFirst({
+          where: {
+            email: email.toLowerCase(),
+          },
+        });
+
+        if (existUser) {
+          res.status(500).json({
+            message: 'Your email already exists.',
+          });
+          return;
+        }
+
+        newUser = await prisma.user.create({
+          data: {
+            name,
+            email: email.toLowerCase(),
+            password: hashed_password,
+            plan: Plan.FREE,
+          },
+        });
+      }
 
       const newCode = await prisma.verificationCode.create({
         data: {

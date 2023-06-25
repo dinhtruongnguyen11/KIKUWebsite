@@ -10,7 +10,11 @@ import { useRouter } from 'next/navigation';
 
 import { authOptions } from '../api/auth/[...nextauth]';
 
-export default function LoginPage() {
+interface Props {
+  email: string;
+}
+
+export default function LoginVerificationPage({ email }: Props) {
   const { data: session } = useSession();
   const input_style = `form-control block w-full px-1 py-2 
     text-2xl font-normal text-gray-700 text-center
@@ -26,6 +30,9 @@ export default function LoginPage() {
   const [data, setData] = useState<string[]>(['', '', '', '', '', '']);
   const inputRefs = useRef<Array<HTMLInputElement>>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const [isResending, setIsResending] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(30);
 
   const handleChange = (index: number, value: string) => {
     const newData = [...data];
@@ -128,6 +135,40 @@ export default function LoginPage() {
     }
   };
 
+  useEffect(() => {
+    let countdownId: any;
+
+    if (isResending) {
+      countdownId = setTimeout(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000);
+    }
+
+    if (remainingTime === 0) {
+      setIsResending(false);
+    }
+
+    return () => clearTimeout(countdownId);
+  }, [isResending, remainingTime]);
+
+  const handleResend = async () => {
+    setIsResending(true);
+    setRemainingTime(30);
+
+    const formBody = {
+      email,
+      reSend: '1',
+    };
+
+    await fetch('/api/register', {
+      method: 'POST',
+      body: JSON.stringify(formBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };
+
   return (
     <>
       <Head>
@@ -151,7 +192,10 @@ export default function LoginPage() {
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
       >
-        <div className="flex flex-col w-96 bg-white px-6 py-7 shadow rounded-lg">
+        <div
+          className="flex flex-col w-96 bg-white px-6 pt-7 pb-5
+        shadow rounded-lg"
+        >
           <div className="flex w-full items-center justify-center mb-5">
             <Image src="/kikulg.ico" alt="" width={60} height={60} />
           </div>
@@ -161,9 +205,11 @@ export default function LoginPage() {
 
           <span
             className="text-center text-gray-700 w-full 
-          text-sm font-light mb-5"
+          text-sm font-light mb-5 flex flex-col"
           >
-            Enter the code sent to your email to complete the login process.
+            Enter the code sent to
+            <span className="font-bold"> {email} </span>
+            to complete the login process.
           </span>
 
           <div className="flex mb-5 gap-1.5">
@@ -187,10 +233,13 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={submit}
-            className="flex items-center justify-center px-7 py-3 hover:bg-blue-700 bg-blue-600 
+            className="flex items-center justify-center px-7 py-3 
+            hover:bg-blue-700 bg-blue-600 
         text-white font-medium text-sm leading-snug  rounded h-11
-        shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none 
-        focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 
+        shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg 
+        focus:outline-none 
+        focus:ring-0 active:bg-blue-800 active:shadow-lg transition
+         duration-150 mb-3
         ease-in-out w-full"
             disabled={loading}
             ref={buttonRef}
@@ -201,26 +250,30 @@ export default function LoginPage() {
               'Submit'
             )}
           </button>
+          <div className="w-full flex justify-end underline text-sm">
+            <button
+              type="button"
+              className="text-gray-800 hover:text-gray-900"
+              onClick={handleResend}
+              disabled={isResending}
+            >
+              {isResending ? `Resend in ${remainingTime}s` : 'Resend'}
+            </button>
+          </div>
         </div>
       </main>
     </>
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (
-//   context: GetServerSidePropsContext,
-// ) => {
-//   const session = await getServerSession(context.req, context.res, authOptions);
-//   if (!session) {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: '/authenticate/login',
-//       },
-//       props: {},
-//     };
-//   }
-//   return {
-//     props: {},
-//   };
-// };
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  let email = session?.user?.email?.toLowerCase();
+  return {
+    props: {
+      email,
+    },
+  };
+};

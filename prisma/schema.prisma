@@ -11,41 +11,40 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-  verified Boolean @default(false)   
-  firstLogin Boolean @default(true)   
-  role    Role     @default(USER) 
-  plan    Plan  @default(FREE) 
-  wordCount Int @default(0)   
-  imageCount Int @default(0)  
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  verified   Boolean @default(false)
+  firstLogin Boolean @default(true)
+  role       Role    @default(USER)
+  plan       Plan    @default(NONE)
+  wordCount  Int     @default(0)
+  imageCount Int     @default(0)
 }
 
-
 model VerificationCode {
-  id       String @id @default(uuid())
-  code            String   
-  email          String
-  type          String
-  active        Boolean @default(true)   
-  createdAt       DateTime @default(now())
+  id        String   @id @default(uuid())
+  code      String
+  email     String
+  type      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
 }
 
 model UserLogging {
-  id       String @id @default(uuid())
-  type            String   
-  email          String
-  createdAt       DateTime @default(now())
+  id        String   @id @default(uuid())
+  type      String
+  email     String
+  createdAt DateTime @default(now())
 }
 
 model Payment {
-        id      Int    @id @default(autoincrement())
-        orderID String
-        status  String
-        email String
-        createdAt       DateTime @default(now())
+  id        String   @id @default(uuid())
+  orderID   String
+  status    String
+  email     String
+  createdAt DateTime @default(now())
 }
 
 enum Role {
@@ -53,10 +52,8 @@ enum Role {
   ADMIN
 }
 
-
 enum Plan {
   FREE
   PAID
+  NONE
 }
-
-
