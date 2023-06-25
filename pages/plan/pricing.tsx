@@ -1,5 +1,6 @@
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
+import Lottie from 'lottie-react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
@@ -7,19 +8,38 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth';
 import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { authOptions } from '../api/auth/[...nextauth]';
 
+import { prisma } from '@/lib/prisma';
+import paymentSucessful from '@/public/lottie/paymentSucccessful.json';
+
 interface PricingProps {
   email: string;
+  plan: string;
 }
 
-const Pricing = ({ email }: PricingProps) => {
+const Pricing = ({ email, plan }: PricingProps) => {
   const [showProPlan, setShowProPlan] = useState(true);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const router = useRouter();
+
+  const handleFreeStart = async () => {
+    const body = {
+      email,
+      type: 0,
+    };
+    await fetch('/api/updatePlan', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    router.push('/');
+  };
 
   return (
     <>
@@ -40,7 +60,7 @@ const Pricing = ({ email }: PricingProps) => {
       </Head>
       <div
         className="flex flex-col lg:flex-row bg-white  
-    antialiased font-normal  sm:py-5 px-3 lg:px-5 min-h-screen h-full"
+    antialiased font-normal py-3 sm:py-5 px-3 lg:px-5 min-h-screen h-full"
       >
         <div
           className="lg:w-1/3 w-full  flex flex-col bg-[#EBF2FC] rounded-xl text-xl 
@@ -111,14 +131,21 @@ const Pricing = ({ email }: PricingProps) => {
                   2000 words and 5 images per month <IconCircleCheckFilled />
                 </span>
               </div>
-              <Link
-                href="/"
-                className="bg-[#2AAAE3] py-2 rounded-lg text-white 
-                hover:shadow-lg hover:outline-none hover:ring-0
-                flex justify-center"
+              <button
+                type="button"
+                className={` py-2 rounded-lg 
+                text-white 
+                ${
+                  plan == 'FREE'
+                    ? 'bg-gray-500'
+                    : 'bg-[#2AAAE3] hover:shadow-lg hover:outline-none hover:ring-0'
+                }
+                flex justify-center`}
+                onClick={handleFreeStart}
+                disabled={plan == 'FREE'}
               >
-                Get Started
-              </Link>
+                {plan == 'FREE' ? 'Your current plan' : 'Get Started'}
+              </button>
             </div>
             <div
               className={`${
@@ -163,7 +190,7 @@ const Pricing = ({ email }: PricingProps) => {
                     <span className="flex justify-between">
                       Unlimited words and answers <IconCircleCheckFilled />
                     </span>
-                    <span className="flex justify-between">
+                    <span className="flex justify-between ">
                       <div className="flex gap-2">
                         Unlimited HD Image Generation
                         <svg
@@ -177,7 +204,7 @@ const Pricing = ({ email }: PricingProps) => {
                             d="M9.813 15.904L9 18.75L8.187 15.904C7.97687 15.1689 7.5829 14.4994 7.04226 13.9587C6.50162 13.4181 5.83214 13.0241 5.097 12.814L2.25 12L5.096 11.187C5.83114 10.9769 6.50062 10.5829 7.04126 10.0423C7.5819 9.50162 7.97587 8.83214 8.186 8.097L9 5.25L9.813 8.096C10.0231 8.83114 10.4171 9.50062 10.9577 10.0413C11.4984 10.5819 12.1679 10.9759 12.903 11.186L15.75 12L12.904 12.813C12.1689 13.0231 11.4994 13.4171 10.9587 13.9577C10.4181 14.4984 10.0241 15.1679 9.814 15.903L9.813 15.904ZM18.259 8.715L18 9.75L17.741 8.715C17.5927 8.12159 17.286 7.57962 16.8536 7.14703C16.4212 6.71444 15.8794 6.40749 15.286 6.259L14.25 6L15.286 5.741C15.8794 5.59251 16.4212 5.28556 16.8536 4.85297C17.286 4.42038 17.5927 3.87841 17.741 3.285L18 2.25L18.259 3.285C18.4073 3.87854 18.7142 4.42059 19.1468 4.85319C19.5794 5.28579 20.1215 5.59267 20.715 5.741L21.75 6L20.715 6.259C20.1215 6.40733 19.5794 6.71421 19.1468 7.14681C18.7142 7.57941 18.4073 8.12147 18.259 8.715ZM16.894 20.567L16.5 21.75L16.106 20.567C15.9955 20.2356 15.8094 19.9345 15.5625 19.6875C15.3155 19.4406 15.0144 19.2545 14.683 19.144L13.5 18.75L14.683 18.356C15.0144 18.2455 15.3155 18.0594 15.5625 17.8125C15.8094 17.5655 15.9955 17.2644 16.106 16.933L16.5 15.75L16.894 16.933C17.0045 17.2644 17.1906 17.5655 17.4375 17.8125C17.6845 18.0594 17.9856 18.2455 18.317 18.356L19.5 18.75L18.317 19.144C17.9856 19.2545 17.6845 19.4406 17.4375 19.6875C17.1906 19.9345 17.0045 20.2356 16.894 20.567Z"
                             stroke="white"
                             strokeWidth="1.5"
-                            stroke-linecap="round"
+                            strokeLinecap="round"
                             stroke-linejoin="round"
                           />
                         </svg>
@@ -197,25 +224,38 @@ const Pricing = ({ email }: PricingProps) => {
                     onClick={() => {
                       setShowProPlan(false);
                     }}
-                    className="text-[#2AAAE3] py-2 rounded-lg bg-white hover:shadow-lg hover:outline-none hover:ring-0"
+                    className={`text-[#2AAAE3] py-2 rounded-lg 
+                    bg-white 
+                    ${
+                      plan == 'PAID'
+                        ? ''
+                        : 'hover:shadow-lg hover:outline-none hover:ring-0'
+                    }
+                    `}
+                    disabled={plan == 'PAID'}
                   >
-                    Choose Plan
+                    {plan == 'PAID' ? 'Your current plan' : 'Choose Plan'}
                   </button>
                 </>
               )}
 
               {paymentComplete && (
                 <div className="text-gray-800 flex flex-col items-center">
-                  <Image
+                  {/* <Image
                     className="mb-3"
                     src="/images/payment-successful.jpg"
                     alt=""
                     width={200}
                     height={200}
+                  /> */}
+                  <Lottie
+                    animationData={paymentSucessful}
+                    loop={false}
+                    style={{ height: 300 }}
                   />
                   <span className="font-bold mb-1 ">Payment successful! </span>
                   <span className="text-sm">
-                    You will be redirected to the chat now ...
+                    Welcome to your new personal assistant ...
                   </span>
                 </div>
               )}
@@ -249,15 +289,14 @@ const Pricing = ({ email }: PricingProps) => {
                       const orderID = details?.id;
                       const status = details?.status;
                       if (status == 'COMPLETED') {
-                        const body = {
+                        const bodyForm = {
                           orderID,
                           status,
                           email,
                         };
-                        console.log(body);
                         const res = await fetch('/api/paypal/captureOrder', {
                           method: 'POST',
-                          body: JSON.stringify(body),
+                          body: JSON.stringify(bodyForm),
                           headers: {
                             'Content-Type': 'application/json',
                           },
@@ -266,6 +305,18 @@ const Pricing = ({ email }: PricingProps) => {
                           alert('Error when update user info! Try again.');
                           return;
                         }
+
+                        await fetch('/api/updatePlan', {
+                          method: 'POST',
+                          body: JSON.stringify({
+                            email,
+                            type: 1,
+                          }),
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        });
+
                         setPaymentComplete(true);
                         setTimeout(() => {
                           router.push('/');
@@ -288,9 +339,15 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
   let email = session?.user?.email?.toLowerCase();
+  const existUser = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
   return {
     props: {
       email,
+      plan: existUser?.plan,
     },
   };
 };
